@@ -1,0 +1,164 @@
+﻿<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8" />
+    <title>Back_Layout</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    @Styles.Render("~/Content/themes/base/css")
+    <script src="~/Scripts/jquery-1.7.1.js"></script>
+</head>
+<body>
+    
+<style>
+tr.focus
+{
+    background:#e4e4e4;
+}
+
+</style>
+    <script>
+
+        $(function () {
+            $.post(
+                '@Url.Action("xxx", "UserManager")', $('#form1').serialize(),
+            function (result) {
+                $('#nav1').show()
+                $('#nav2').show()
+                $('#nav3').show()
+                $('#nav4').show()
+                $('#nav5').show()
+                $('#nav6').show()
+                if (result == "1") {
+                    $('#nav2').hide()
+                    $('#nav3').hide()
+                    $('#nav4').hide()
+                    $('#nav5').hide()
+                    $('#nav6').hide()
+                    return;
+                }
+                if (result == "2") {
+                    $('#nav1').hide()
+                    $('#nav4').hide()
+                    $('#nav5').hide()
+                    $('#nav6').hide()
+                    return;
+                }
+                if (result == "3") {
+                    $('#nav1').hide()
+                    $('#nav2').hide()
+                    $('#nav3').hide()
+                    return;
+                }
+
+                if (result == "4") {
+                   
+                    window.location.href = '../../ForeExhibition/Login';
+                    alert("请先登录管理员账号");
+                    return;
+                }
+            });
+        });
+
+        $(function IndexAjax(id) {
+            $.get('@Url.Action("PersonalIndex1", "UserManager")', $('#form1').serialize(),//url: 获取服务器数据的地址 date:向服务器传递的参数 callback: 回调函数，在服务器响应后，页面更新前执行
+                  function (result) {
+                      var a = result.aa[0];
+                      $('#boxx_k').empty();
+                      $('#boxx_k').append('  <div class="title"><h1 class="h4">'+a.UserName+'</h1></div>')
+                  })
+          })
+
+
+    </script>
+    <form id="form1">
+        <div id="body">
+            <div class="page">
+                <!-- Main Navbar-->
+                <header class="header">
+                    <nav class="navbar">
+                        <!-- Search Box-->
+                        <div class="search-box">
+                            <button class="dismiss"><i class="icon-close"></i></button>
+                            <form id="searchForm" action="#" role="search">
+                                <input type="search" placeholder="搜点啥？" style="height: 100%;" class="form-control">
+                            </form>
+                        </div>
+
+                        <div class="container-fluid">
+                            <div class="navbar-holder d-flex align-items-center justify-content-between">
+                                <!-- Navbar Header-->
+                                <div class="navbar-header">
+                                    <!-- Navbar Brand -->
+                                    <a href="../UserManager/UserManagerIndex    " class="navbar-brand d-none d-sm-inline-block">
+                                        <div class="brand-text d-none d-lg-inline-block">
+                                            <span>
+                                                <img src="../../Content/img/logo.png" width="50" height="51" />
+                                            </span><strong>国际贸易平台</strong>
+                                        </div>
+                                        <div class="brand-text d-none d-sm-inline-block d-lg-none"><strong>BD</strong></div>
+                                    </a>
+                                    <!-- Toggle Button-->
+                                    <a id="toggle-btn" href="#" class="menu-btn active"><span></span><span></span><span></span></a>
+                                </div>
+                                <!-- Navbar Menu -->
+                                <ul class="nav-menu list-unstyled d-flex flex-md-row align-items-md-center">
+                                    <!-- Search-->
+                                    <li class="nav-item d-flex align-items-center"><a id="search" href="#"><i class="icon-search"></i></a></li>
+                                    <li class="nav-item"><a href="../../" class="nav-link logout"><span class="d-none d-sm-inline">登出</span><i class="fa fa-sign-out"></i></a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </nav>
+                </header>
+                <div class="page-content d-flex align-items-stretch">
+                    <!-- Side Navbar -->
+                    <nav class="side-navbar">
+                        <!-- Sidebar Header-->
+                        <div class="sidebar-header d-flex align-items-center">
+                            <div class="avatar">
+                                <img src="~/Content/img/222.png" alt="..." class="img-fluid rounded-circle">
+                            </div>
+                            <div id="boxx_k"></div>
+                          
+                        </div>
+                        <!-- Sidebar Navidation Menus-->
+                        <ul class="list-unstyled">
+                            <li id="nav1"><a href="../UserManager/UserManagerIndex"><i class="icon-home"></i>用户管理页</a></li>
+                            <li id="nav2"><a href="../Examine/ExamineIndex"><i class="icon-grid"></i>企业年审材料审核页 </a></li>
+                            <li id="nav3"><a href="../Embassy/EmbassyIndex"><i class="fa fa-bar-chart"></i>使馆认证管理页 </a></li>
+                            <li id="nav4"><a href="../TradeInfo/TradeInfoIndex"><i class="icon-padnote"></i>商展信息管理页 </a></li>
+                            <li id="nav5"><a href="../VisaManage/VisaManageIndex"><i class="icon-padnote"></i>签证管理页 </a></li>
+                            <li id="nav6"><a href="../TradeExamine/TradeExamineIndex"><i class="icon-interface-windows"></i>商展申请审核管理页 </a></li>
+                            @*<li><a href="#exampledropdownDropdown" aria-expanded="false" data-toggle="collapse"><i class="icon-interface-windows"></i>Example dropdown </a>
+                            <ul id="exampledropdownDropdown" class="collapse list-unstyled ">
+                                <li><a href="#">Page</a></li>
+                                <li><a href="#">Page</a></li>
+                                <li><a href="#">Page</a></li>
+                            </ul>
+                        </li>*@
+                            @*                        <li><a href="login.html"><i class="icon-interface-windows"></i>Login page</a></li>*@
+                        </ul>
+                        @*<span class="heading">Extras</span>*@
+                    </nav>
+                    <div class="content-inner">
+                        @RenderSection("featured", required: false)
+                        @RenderBody()
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </form>
+    @Scripts.Render("~/bundles/jquery")
+    @RenderSection("scripts", required: false)
+
+    <script src="~/Scripts/jquery.min.js"></script>
+    <script src="~/Scripts/bootstrap.min.js"></script>
+    <script src="~/Scripts/front.js"></script>
+
+</body>
+
+</html>
+

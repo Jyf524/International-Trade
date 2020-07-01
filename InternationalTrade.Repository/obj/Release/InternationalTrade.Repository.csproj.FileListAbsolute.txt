@@ -1,0 +1,12 @@
+C:\Users\Administrator\Desktop\镇江市国际贸易促进委员会在线办理平台\International Trade\InternationalTrade.Repository\bin\Release\InternationalTrade.Repository.dll.config
+C:\Users\Administrator\Desktop\镇江市国际贸易促进委员会在线办理平台\International Trade\InternationalTrade.Repository\bin\Release\InternationalTrade.Repository.dll
+C:\Users\Administrator\Desktop\镇江市国际贸易促进委员会在线办理平台\International Trade\InternationalTrade.Repository\bin\Release\InternationalTrade.Repository.pdb
+C:\Users\Administrator\Desktop\镇江市国际贸易促进委员会在线办理平台\International Trade\InternationalTrade.Repository\bin\Release\EntityFramework.dll
+C:\Users\Administrator\Desktop\镇江市国际贸易促进委员会在线办理平台\International Trade\InternationalTrade.Repository\bin\Release\EntityFramework.SqlServer.dll
+C:\Users\Administrator\Desktop\镇江市国际贸易促进委员会在线办理平台\International Trade\InternationalTrade.Repository\bin\Release\EntityFramework.xml
+C:\Users\Administrator\Desktop\镇江市国际贸易促进委员会在线办理平台\International Trade\InternationalTrade.Repository\bin\Release\EntityFramework.SqlServer.xml
+C:\Users\Administrator\Desktop\镇江市国际贸易促进委员会在线办理平台\International Trade\InternationalTrade.Repository\bin\Release\zh-Hans\EntityFramework.resources.dll
+C:\Users\Administrator\Desktop\镇江市国际贸易促进委员会在线办理平台\International Trade\InternationalTrade.Repository\bin\Release\zh-Hans\EntityFramework.SqlServer.resources.dll
+C:\Users\Administrator\Desktop\镇江市国际贸易促进委员会在线办理平台\International Trade\InternationalTrade.Repository\obj\Release\InternationalTrade.Repository.dll
+C:\Users\Administrator\Desktop\镇江市国际贸易促进委员会在线办理平台\International Trade\InternationalTrade.Repository\obj\Release\InternationalTrade.Repository.pdb
+C:\Users\Administrator\Desktop\镇江市国际贸易促进委员会在线办理平台\International Trade\InternationalTrade.Repository\obj\Release\InternationalTrade.Repository.csprojResolveAssemblyReference.cache

@@ -1,0 +1,222 @@
+﻿@{
+    ViewBag.Title = "TradeInfoDetail";
+    Layout = "~/Areas/BackManager/Views/Shared/Back_Layout.cshtml";
+}
+
+<link href="~/Content/css/fileinput.min.css" rel="stylesheet" />
+<link href="~/Content/css/fileinput.css" rel="stylesheet" />
+
+<script src="~/Scripts/fileinput.min.js"></script>
+<script src="~/Scripts/fileinput.js"></script>
+<script src="~/Scripts/fileinput_locale_zh.js"></script>
+<script>
+
+    var xa;
+
+    function UrlSearch() {
+        var name, id;
+        var str = location.href; //获取到整个地址
+        var num = str.indexOf("?")
+        str = str.substr(num + 1); //取得num+1后所有参数，这里的num+1是下标 str.substr(start [, length ]
+        var arr = str.split("&"); //以&分割各个参数放到数组里
+        for (var i = 0; i < arr.length; i++) {
+            num = arr[i].indexOf("=");
+            if (num > 0) {
+                id = arr[i].substring(0, num);
+                id = arr[i].substr(num + 1);
+                this[name] = id;
+                return id;
+            }
+        }
+    }
+
+    function ChangeDateFormat(jsondate) {
+        jsondate = jsondate.replace("/Date(", "").replace(")/", "");
+        if (jsondate.indexOf("+") > 0) {
+            jsondate = jsondate.substring(0, jsondate.indexOf("+"));
+        }
+
+        else if (jsondate.indexOf("-") > 0) {
+            jsondate = jsondate.substring(0, jsondate.indexOf("-"));
+        }
+        var date = new Date(parseInt(jsondate, 10));
+        var month = date.getMonth() + 1 < 10 ? "0" + (date.getMonth() + 1) : date.getMonth() + 1;
+        var currentDate = date.getDate() < 10 ? "0" + date.getDate() : date.getDate();
+        return date.getFullYear() + "-" + month + "-" + currentDate;
+    };
+
+    function Back() {
+        window.location.href = '../TradeInfo/TradeInfoIndex';
+    }
+
+    $(function DetailAjax() {
+
+        $.post('@Url.Action("TradeInfoDetail1", "TradeInfo")', { id: UrlSearch() },
+
+                    function (result) {
+                        $('#TradeTitle1').val(result.TradeTitle);
+                        $('#TradeAddress1').val(result.TradeAddress);
+                        $('#TradeInfo1').val(result.TradeInfo);
+                        $('#file1').append(result.TradeImg);
+                        var a = ChangeDateFormat(result.TradeTime);
+                        $('#TradeTime1').val(a);
+                        $('#TradeIntroduction1').val(result.TradeIntroduction);
+                        $('#TradeContact1').val(result.TradeContact);
+                        $('#Fax1').val(result.Fax);
+                        $('#ContactPhone1').val(result.ContactPhone);
+                    }
+
+                )
+    })
+
+    $(function () {
+        $("[class='kv-upload-progress hide']").hide();
+        $("[class='btn btn-default kv-fileinput-upload fileinput-upload-button']").hide();
+        $("[class='hide btn btn-default fileinput-cancel fileinput-cancel-button']").hide();
+        $("[class='btn btn-default fileinput-remove fileinput-remove-button']").hide();
+        $("[class='file-input file-input-new']").addClass("s");
+
+
+    })
+
+    function upload() {
+
+        var fd = new FormData();
+        fd.append("TradeImg", $('#file-0')[0].files[0]);
+        fd.append("idd", $('#idd').val());
+        fd.append("TradeTitle", $('#TradeTitle1').val());
+        fd.append("TradeTime", $('#TradeTime1').val());
+        fd.append("TradeAddress", $('#TradeAddress1').val());
+        fd.append("TradeIntroduction", $('#TradeIntroduction1').val());
+        fd.append("TradeInfo", $('#TradeInfo1').val());
+        fd.append("TradeContact", $('#TradeContact1').val());
+        fd.append("Fax", $('#Fax1').val());
+        fd.append("ContactPhone", $('#ContactPhone1').val());
+
+
+        $.ajax({
+            url: "@Url.Action("TradeInfoDetailSave", "TradeInfo")",//调用控制器中的方法
+            type: "post",
+            dataType: "json",
+            data: fd,
+            async: false,
+            cache: false,
+            contentType: false,
+            processData: false,
+            success: function (data) {
+                if (data == "修改成功！") {
+                    alert(data);
+                    window.location.href = "../TradeInfo/TradeInfoIndex";
+                }
+                else {
+                    alert(data);
+                }
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                /*弹出jqXHR对象的信息*/
+                console.log(jqXHR.responseText, jqXHR.status, jqXHR.readyState, jqXHR.statusText, textStatus, errorThrown);
+
+            }
+        });
+    }
+
+@*    function Save() {
+        xa = UrlSearch();
+        SaveAjax(xa);
+    }
+
+    function SaveAjax(id) {
+        $.post('@Url.Action("TradeInfoDetailSave", "TradeInfo")', { TradeTitle: $("#TradeTitle1").val(), TradeAddress: $("#TradeAddress1").val(), TradeInfo: $("#TradeInfo1").val(), TradeTime: $("#TradeTime1").val(), TradeIntroduction: $("#TradeIntroduction1").val(), TradeContact: $("#TradeContact1").val(), Fax: $("#Fax1").val(), ContactPhone: $("#ContactPhone1").val(), id: id },
+                          function (result) {
+                              alert(result);
+                              window.location.href = '../TradeInfo/TradeInfoIndex';
+                          }
+
+                      )
+    }*@
+
+    $(function () {
+        $('#idd').val(UrlSearch());
+    })
+
+</script>
+
+<style>
+
+    .s {
+        width:100%;
+    }
+
+</style>
+
+<header class="page-header">
+    <div class="container-fluid">
+        <h2 class="no-margin-bottom">商展信息修改页</h2>
+    </div>
+</header>
+<div style="padding-top: 2.5rem; padding-right: 2.5rem; padding-left: 2.5rem;">
+    <div style="background: #fff;margin-top:15px;">
+        <div class="row" style="margin-bottom: 10px; padding-left: 2.5rem;">
+            <div class="col-sm-3 col-xs-3" style="padding: 0 10px 0 20px; margin-top: 15px">商展图片：</div>
+            <div class="col-sm-7 col-xs-8 " style="margin-bottom: 10px;margin-top:15px;">
+                <input id="file-0" name="file1" type="file" multiple class="file" data-show-preview="false" data-overwrite-initial="false" data-min-file-count="1" >
+            </div>
+            <div class="col-sm-3 col-xs-3" style="padding: 0 10px 0 20px; margin-top: 5px">标题：</div>
+            <div class="col-sm-7 col-xs-8 " style="margin-bottom: 10px;">
+                <input type="text" name="TradeTitle" id="TradeTitle1" oninput="if(value.length>15)value=value.slice(0,15)"  class="form-control" placeholder="请输入标题" />
+            </div>
+            <div class="col-sm-3 col-xs-3" style="padding: 0 10px 0 20px; margin-top: 5px">展会时间：</div>
+            <div class="col-sm-7 col-xs-8 " style="margin-bottom: 10px;">
+                <input type="date" class="form-control" id="TradeTime1" name="TradeTime" />
+            </div>
+            <div class="col-sm-3 col-xs-3" style="padding: 0 10px 0 20px; margin-top: 5px">展会地点：</div>
+            <div class="col-sm-7 col-xs-8 " style="margin-bottom: 10px;">
+                <input type="text" name="TradeAddress" id="TradeAddress1" class="form-control" oninput="if(value.length>15)value=value.slice(0,15)" placeholder="请输入展会地点" />
+            </div>
+            <div class="col-sm-3 col-xs-3" style="padding: 0 10px 0 20px; margin-top: 5px">展会简介：</div>
+            <div class="col-sm-7 col-xs-8 " style="margin-bottom: 10px;">
+                <input type="text" name="TradeIntroduction" id="TradeIntroduction1" class="form-control" oninput="if(value.length>20)value=value.slice(0,21)" placeholder="请输入展会简介" />
+            </div>
+            <div class="col-sm-3 col-xs-3" style="padding: 0 10px 0 20px; margin-top: 5px">展会内容：</div>
+            <div class="col-sm-7 col-xs-8 " style="margin-bottom: 10px;">
+                <input type="text" name="TradeInfo" id="TradeInfo1" class="form-control" oninput="if(value.length>30)value=value.slice(0,31)"  placeholder="请输入展会内容" />
+            </div>
+            <div class="col-sm-3 col-xs-3" style="padding: 0 10px 0 20px; margin-top: 5px">联系人：</div>
+            <div class="col-sm-7 col-xs-8 " style="margin-bottom: 10px;">
+                <input type="text" name="TradeContact" id="TradeContact1" class="form-control" oninput="if(value.length>10)value=value.slice(0,11)" placeholder="请输入联系人" />
+            </div>
+            <div class="col-sm-3 col-xs-3" style="padding: 0 10px 0 20px; margin-top: 5px">传真：</div>
+            <div class="col-sm-7 col-xs-8 " style="margin-bottom: 10px;">
+                <input type="text" name="Fax" id="Fax1" class="form-control" oninput="if(value.length>10)value=value.slice(0,11)" placeholder="请输入传真" />
+            </div>
+            <div class="col-sm-3 col-xs-3" style="padding: 0 10px 0 20px; margin-top: 5px">联系电话：</div>
+            <div class="col-sm-7 col-xs-8 " style="margin-bottom: 10px;">
+                <input type="text" name="ContactPhone" id="ContactPhone1" class="form-control" placeholder="请输入联系电话" />
+            </div>
+        </div>
+        <div class="modal-footer">
+            <input type="text" id="idd" name="idd" hidden="hidden" />
+            <button type="button" class="btn btn-default" onclick="Back()">取消</button>
+            <button type="button"  class="btn btn-primary" onclick="upload()" >保存</button>
+        </div>
+    </div>
+
+</div>
+
+
+<script>
+    $('#file-0').fileinput({
+        language: 'zh', //设置语言
+        //uploadUrl: uploadUrl, //上传的地址
+        uploadUrl: "/FileUpload/Upload", //上传的地址
+        allowedFileExtensions: ['jpg', 'png', 'gif'],//接收的文件后缀,
+        maxFileCount: 1,
+        enctype: 'multipart/form-data',
+        showUpload: true, //是否显示上传按钮
+        showCaption: true,//是否显示标题
+        browseClass: "btn btn-primary", //按钮样式             
+        previewFileIcon: "<i class='glyphicon glyphicon-king'></i>",
+        msgFilesTooMany: "选择上传的文件数量({n}) 超过允许的最大数值{m}！"
+    });
+
+</script>

@@ -1,0 +1,91 @@
+﻿@{
+    ViewBag.Title = "VisaStatus";
+    Layout = "~/Views/Shared/ForeLayout.cshtml";
+}
+
+
+<script>
+
+    var xa;
+    var result1;
+    $(function IndexAjax() {
+        $.get('@Url.Action("VisaStatus1", "Personal")', {},//url: 获取服务器数据的地址 date:向服务器传递的参数 callback: 回调函数，在服务器响应后，页面更新前执行
+            function (result) {
+                result1 = result;
+                $('#box1_k').empty();
+                $.each(result.aa, function (Index, list) {
+                    var a = ChangeDateFormat(list.VisaTime);
+                    if (list.VisaState == "1") {
+                        $('#box1_k').append('<div class="col-xs-12 col-md-12" ><label style="height: 34px; line-height: 34px; color: #000; font-size: 14px;" for="inputfile" id="CompanyName" >签证名称:' + list.VisaName + '</label></div><div class="col-xs-12 col-md-12" ><span><label for="inputfile" id="EmbassyTime" style="float:left;line-height: 37px;height: 34px; line-height: 34px; color: #000; font-size: 1.3rem;">认证时间:' + a + '</label></span><span style="float: right;height: 34px; line-height: 34px;  font-size: 1.3rem;color:#3eca03">已认证</span></div></div><div class="col-xs-12 col-md-12" style="border-bottom: 1px #ededed solid; margin: 0 auto; text-align: center;"></div>')
+                    }
+                    if (list.VisaState == "2") {
+                        $('#box1_k').append('<div class="col-xs-12 col-md-12" ><label style="height: 34px; line-height: 34px; color: #000; font-size: 14px;" for="inputfile" id="CompanyName" >签证名称:' + list.VisaName + '</label></div><div class="col-xs-12 col-md-12" ><span><label for="inputfile" id="EmbassyTime1" style="float:left;line-height: 37px;height: 34px; line-height: 34px; color: #000; font-size: 1.3rem;">认证时间:' + a + '</label></span><span style="float: right;color:#ff0000;height: 34px; line-height: 34px; font-size: 1.3rem;">未认证</span></div></div><div class="col-xs-12 col-md-12" style="border-bottom: 1px #ededed solid; margin: 0 auto; text-align: center;"></div>')
+                    }
+
+                })
+                if (result1.ItemNum == 0) {
+                    $('#box1_k').append('<img src="../../Content/img/errorqzzt.jpg" class="img-responsive" style="margin:auto">')
+                    $('#pda').hide();
+                }
+            })
+    })
+
+    function UrlSearch() {
+        var name, id;
+        var str = location.href; //获取到整个地址
+        var num = str.indexOf("?")
+        str = str.substr(num + 1); //取得num+1后所有参数，这里的num+1是下标 str.substr(start [, length ]
+        var arr = str.split("&"); //以&分割各个参数放到数组里
+        for (var i = 0; i < arr.length; i++) {
+            num = arr[i].indexOf("=");
+            if (num > 0) {
+                id = arr[i].substring(0, num);
+                id = arr[i].substr(num + 1);
+                this[name] = id;
+                return id;
+            }
+        }
+    }
+
+
+    function ChangeDateFormat(jsondate) {
+        jsondate = jsondate.replace("/Date(", "").replace(")/", "");
+        if (jsondate.indexOf("+") > 0) {
+            jsondate = jsondate.substring(0, jsondate.indexOf("+"));
+        }
+
+        else if (jsondate.indexOf("-") > 0) {
+            jsondate = jsondate.substring(0, jsondate.indexOf("-"));
+        }
+        var date = new Date(parseInt(jsondate, 10));
+        var month = date.getMonth() + 1 < 10 ? "0" + (date.getMonth() + 1) : date.getMonth() + 1;
+        var currentDate = date.getDate() < 10 ? "0" + date.getDate() : date.getDate();
+        return date.getFullYear() + "-" + month + "-" + currentDate;
+    };
+
+
+
+</script>
+
+<div class="container-fluid">
+    <div class="row xs" style="height: 50px;">
+        <div class="bs-example bs-navbar-top-example" data-example-id="navbar-static-top">
+            <nav class="navbar navbar-default navbar-static-top">
+                <!-- We use the fluid option here to avoid overriding the fixed width of a normal container within the narrow content columns. -->
+                <div class="container-fluid">
+                    <div class="navbar-header" style="height: 50px;">
+                        <div style="font-size: 16px; line-height: 50px;">
+                            <a class="navbar-brand" href="../Personal/PersonalIndex"><span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span></a>
+                            <p style="text-align: center; width: 86%; height: 100%;">签证状态</p>
+                        </div>
+                    </div>
+
+                </div>
+            </nav>
+        </div>
+    </div>
+</div>
+
+<div class="container-fluid" style="background: #fff; height: 610px">
+    <div id="box1_k" style="margin-top: 10px"></div>
+</div>

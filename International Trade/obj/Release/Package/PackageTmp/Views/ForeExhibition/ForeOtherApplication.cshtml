@@ -1,0 +1,98 @@
+﻿@{
+    ViewBag.Title = "ForeOtherApplication";
+    Layout = "~/Views/Shared/ForeLayout.cshtml";
+}
+
+<script>
+
+    function Back() {
+
+        history.back(-1);
+
+    }
+
+    function UrlSearch() {
+        var name, id;
+        var str = location.href; //获取到整个地址
+        var num = str.indexOf("?")
+        str = str.substr(num + 1); //取得num+1后所有参数，这里的num+1是下标 str.substr(start [, length ]
+        var arr = str.split("&"); //以&分割各个参数放到数组里
+        for (var i = 0; i < arr.length; i++) {
+            num = arr[i].indexOf("=");
+            if (num > 0) {
+                id = arr[i].substring(0, num);
+                id = arr[i].substr(num + 1);
+                this[name] = id;
+                return id;
+            }
+        }
+    }
+
+
+
+    $(function IndexAjax(id) {
+        $.get('@Url.Action("ForeOtherApplication1", "ForeExhibition")', { id: UrlSearch() },//url: 获取服务器数据的地址 date:向服务器传递的参数 callback: 回调函数，在服务器响应后，页面更新前执行
+            function (result) {
+                var a = result.aa[0];
+                if (a == undefined) {
+                    $('#box1_k').empty();
+                    $("#box1").attr("style", "border:none!important;");//隐藏div
+                    $('#box1_k').append('<img src="../../Content/img/error.jpg" class="img-responsive center-block" style=" width:649px " /><div style="width:100%;text-align: center;font-size:16px;">该商展未被申请,gkd!</div>')
+                    $('#box2_k').append('<div style="height:300px;background:#fff;"></div>')
+                }
+                else {
+                    $('#box1_k').empty();
+                    $('#box1_k').append('<div class="col-xs-12 col-sm-12" style="margin-top: 20px;"><p style="font-size: 20px;">' + a.TradeTitle + '</p><p>申请总人数:' + a.TradePeopleNum + '</p></div>')
+                    $.each(result.aa, function (Index, list) {
+                        $('#box2_k').append('<div class="col-xs-12 col-sm-12"><strong style="font-size: 20px">' + list.CompanyName + '</strong></div><div class="col-xs-12 col-sm-12"><strong>' + list.EnglishName + '</strong><strong style="float: right">占地面积:' + list.TradeArea + 'm²</strong></div>')
+                    })
+                }
+            })
+
+    })
+
+</script>
+
+
+
+<div class="container-fluid">
+    <div class="row xs" style="height: 50px;">
+        <div class="bs-example bs-navbar-top-example" data-example-id="navbar-static-top">
+            <nav class="navbar navbar-default navbar-static-top">
+                <!-- We use the fluid option here to avoid overriding the fixed width of a normal container within the narrow content columns. -->
+                <div class="container-fluid">
+                    <div class="navbar-header" style="height: 50px;">
+                        <div style="font-size: 16px; line-height: 50px;">
+                            <a class="navbar-brand" onclick="Back()"><span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span></a>
+                            <p style="text-align: center; width: 86%; height: 100%;">展会申请人</p>
+                        </div>
+                        
+                    </div>
+
+                </div>
+            </nav>
+        </div>
+    </div>
+</div>
+<div class="container-fluid">
+    <div>
+        <div class="row" id="box1" style="border-bottom: solid 1px #e6e6e6">
+            
+            <div id="box1_k">
+
+            </div>
+
+        </div>
+
+        <div class="row" id="box2" style="border-bottom: solid 1px  #e6e6e6; padding: 1rem">
+
+            <div id="box2_k"></div>
+            
+            
+
+
+        </div>
+
+    </div>
+
+</div>

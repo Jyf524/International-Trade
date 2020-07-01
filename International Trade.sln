@@ -1,0 +1,32 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InternationalTrade", "International Trade\InternationalTrade.csproj", "{32C7FC4D-EBE1-4F63-A605-8E06C2501731}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InternationalTrade.Repository", "InternationalTrade.Repository\InternationalTrade.Repository.csproj", "{93182E71-AC4B-41F9-B663-D64BC42DC8DA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InternationalTrade.Service", "InternationalTrade.Service\InternationalTrade.Service.csproj", "{5EDEE09F-F61F-4405-8C9C-182EC8BC2051}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{32C7FC4D-EBE1-4F63-A605-8E06C2501731}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{32C7FC4D-EBE1-4F63-A605-8E06C2501731}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{32C7FC4D-EBE1-4F63-A605-8E06C2501731}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{32C7FC4D-EBE1-4F63-A605-8E06C2501731}.Release|Any CPU.Build.0 = Release|Any CPU
+		{93182E71-AC4B-41F9-B663-D64BC42DC8DA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{93182E71-AC4B-41F9-B663-D64BC42DC8DA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{93182E71-AC4B-41F9-B663-D64BC42DC8DA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{93182E71-AC4B-41F9-B663-D64BC42DC8DA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5EDEE09F-F61F-4405-8C9C-182EC8BC2051}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5EDEE09F-F61F-4405-8C9C-182EC8BC2051}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5EDEE09F-F61F-4405-8C9C-182EC8BC2051}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5EDEE09F-F61F-4405-8C9C-182EC8BC2051}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

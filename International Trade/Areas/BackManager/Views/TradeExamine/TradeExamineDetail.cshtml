@@ -1,0 +1,277 @@
+﻿@{
+    ViewBag.Title = "TradeExamineDetail";
+    Layout = "~/Areas/BackManager/Views/Shared/Back_Layout.cshtml";
+}
+
+<script>
+
+
+    function UrlSearch() {
+        var name, id;
+        var str = location.href; //获取到整个地址
+        var num = str.indexOf("?")
+        str = str.substr(num + 1); //取得num+1后所有参数，这里的num+1是下标 str.substr(start [, length ]
+        var arr = str.split("&"); //以&分割各个参数放到数组里
+        for (var i = 0; i < arr.length; i++) {
+            num = arr[i].indexOf("=");
+            if (num > 0) {
+                id = arr[i].substring(0, num);
+                id = arr[i].substr(num + 1);
+                this[name] = id;
+                return id;
+            }
+        }
+    }
+
+
+    function ChangeDateFormat(jsondate) {
+        jsondate = jsondate.replace("/Date(", "").replace(")/", "");
+        if (jsondate.indexOf("+") > 0) {
+            jsondate = jsondate.substring(0, jsondate.indexOf("+"));
+        }
+
+        else if (jsondate.indexOf("-") > 0) {
+            jsondate = jsondate.substring(0, jsondate.indexOf("-"));
+        }
+        var date = new Date(parseInt(jsondate, 10));
+        var month = date.getMonth() + 1 < 10 ? "0" + (date.getMonth() + 1) : date.getMonth() + 1;
+        var currentDate = date.getDate() < 10 ? "0" + date.getDate() : date.getDate();
+        return date.getFullYear() + "-" + month + "-" + currentDate;
+    };
+
+    function IndexAjax(id) {
+
+        $.get('@Url.Action("TradeExamineDetail1", "TradeExamine")', { id: UrlSearch() },//url: 获取服务器数据的地址 date:向服务器传递的参数 callback: 回调函数，在服务器响应后，页面更新前执行
+                function (result) {
+                    var x = result.aa[0];
+                    var y = result.axax[0];
+                    if (x != undefined) {
+                        var a = ChangeDateFormat(x.TradeTime);
+                        $('#box1_k').empty();
+                        $('#box1_k').append('<div class="row" style="margin-bottom: 10px; padding: 3.5rem"><div class="col-sm-3 col-xs-3" style="padding: 0 10px 0 20px; margin-top: 5px">标题：</div><div class="col-sm-7 col-xs-8 " style="margin-bottom: 10px;"><label for="inputfile" id="TradeTitle">' + x.TradeTitle + '</label></div><div class="col-sm-3 col-xs-3" style="padding: 0 10px 0 20px; margin-top: 5px">展会时间：</div><div class="col-sm-7 col-xs-8 " style="margin-bottom: 10px;"><label for="inputfile" id="TradeTime">' + a + '</label></div><div class="col-sm-3 col-xs-3" style="padding: 0 10px 0 20px; margin-top: 5px">展会地点：</div><div class="col-sm-7 col-xs-8 " style="margin-bottom: 10px;"><label for="inputfile" id="TradeAddress">' + x.TradeAddress + '</label></div><div class="col-sm-3 col-xs-3" style="padding: 0 10px 0 20px; margin-top: 5px">展会简介：</div><div class="col-sm-7 col-xs-8 " style="margin-bottom: 10px;"><label for="inputfile" id="TradeIntroduction">' + x.TradeIntroduction + '</label></div><div class="col-sm-3 col-xs-3" style="padding: 0 10px 0 20px; margin-top: 5px">展会内容：</div><div class="col-sm-7 col-xs-8 " style="margin-bottom: 10px;"><label for="inputfile" id="TradeContact">' + x.TradeInfo + '</label></div><div class="col-sm-3 col-xs-3" style="padding: 0 10px 0 20px; margin-top: 5px">展会联系人：</div><div class="col-sm-7 col-xs-8 " style="margin-bottom: 10px;"><label for="inputfile" id="ReaderID">' + x.TradeContact + '</label></div><div class="col-sm-3 col-xs-3" style="padding: 0 10px 0 20px; margin-top: 5px">展会所有申请人：</div><div class="col-sm-7 col-xs-8 " style="margin-bottom: 10px;"></div><div class="col-sm-3 col-xs-3" style="padding: 0 10px 0 20px; margin-top: 5px"></div><div class="col-sm-7 col-xs-8 " style="margin-bottom: 10px;"><table class="table  table-hover" style="width: 100%"><thead><tr><th><input type="checkbox" id="allcheck" class="checkbox-template" onclick="demo()" /></th><th>企业名</th><th>占地面积(m²)</th><th>申请时间</th><th>审核状态</th><th>申请文档</th><th>操作</th></tr></thead><tbody id="box2_k"></tbody></table></div></div>')
+                        $.each(result.aa, function (Index, list) {
+
+                            var b = ChangeDateFormat(list.TradeExamineTime);
+                            if (list.TradeExamineState == "1") {
+                                $('#box2_k').append('<tr><td><input type="checkbox" name="choice" value="' + list.TradeExamineID + '" class="checkbox-template" onclick="setAll()" /></td><td><b>' + list.CompanyName + '</b></td><td>' + list.TradeArea + '</td><td>' + b + '</td><td><p style="padding: 2px 30px; border-radius: 40px; background: #CCCCFF; color: #fff; font-size: 0.9em; text-align: center">审核已受理</p></td><td><a href="../' + list.TradeDocument + '">下载</a></td><td></td></tr>')
+                            }
+                            if (list.TradeExamineState == "2") {
+                                $('#box2_k').append('<tr><td><input type="checkbox" name="choice" value="' + list.TradeExamineID + '" class="checkbox-template" onclick="setAll()" /></td><td><b>' + list.CompanyName + '</b></td><td>' + list.TradeArea + '</td><td>' + b + '</td><td><p style="padding: 2px 30px; border-radius: 40px; background: #9999CC; color: #fff; font-size: 0.9em; text-align: center">审核已通过</p></td><td><a href="../' + list.TradeDocument + '">下载</a></td><td><button type="button" name="Confirm" value="' + list.TradeExamineID + '" style="border: 0; background: none">确认反馈</button></td></tr>')
+                            }
+                            if (list.TradeExamineState == "3") {
+                                $('#box2_k').append('<tr><td><input type="checkbox" name="choice" value="' + list.TradeExamineID + '" class="checkbox-template" onclick="setAll()" /></td><td><b>' + list.CompanyName + '</b></td><td>' + list.TradeArea + '</td><td>' + b + '</td><td><p style="padding: 2px 30px; border-radius: 40px; background: #babae2; color: #fff; font-size: 0.9em; text-align: center">审核已驳回</p></td><td><a href="../' + list.TradeDocument + '">下载</a></td><td><button type="button" name="Confirm" value="' + list.TradeExamineID + '" style="border: 0; background: none">确认反馈</button></td></tr>')
+                            }
+                            if (list.TradeExamineState == "4") {
+                                $('#box2_k').append('<tr><td><input type="checkbox" name="choice" value="' + list.TradeExamineID + '" class="checkbox-template" onclick="setAll()" /></td><td><b>' + list.CompanyName + '</b></td><td>' + list.TradeArea + '</td><td>' + b + '</td><td><p style="padding: 2px 30px; border-radius: 40px; background: #CCCCFF; color: #fff; font-size: 0.9em; text-align: center">确认反馈</p></td><td><a href="../' + list.TradeDocument + '">下载</a></td><td><button type="button" name="CheckConfirm" value="' + list.TradeExamineID + '" style="border: 0; background: none"  data-toggle="modal" data-target="#myModalDetail">查看反馈</button><button type="button" name="VisaAdd" value="' + list.CompanyID + ',' + list.TradeExamineID + '" style="border: 0; background: none"">签证受理</button></td></tr>')
+                            }
+                            if (list.TradeExamineState == "6") {
+                                $('#box2_k').append('<tr><td><input type="checkbox" name="choice" value="' + list.TradeExamineID + '" class="checkbox-template" onclick="setAll()" /></td><td><b>' + list.CompanyName + '</b></td><td>' + list.TradeArea + '</td><td>' + b + '</td><td><p style="padding: 2px 30px; border-radius: 40px; background: #CCCCFF; color: #fff; font-size: 0.9em; text-align: center">申请完成</p></td><td><a href="../' + list.TradeDocument + '">下载</a></td><td><button type="button" name="CheckConfirm" value="' + list.TradeExamineID + '" style="border: 0; background: none"  data-toggle="modal" data-target="#myModalDetail">查看反馈</button></tr>')
+                            }
+                        }
+
+                        )
+                    }
+                    else
+                    {
+                        var a = ChangeDateFormat(y.TradeTime);
+                        $('#box1_k').empty();
+                        $('#box1_k').append('<div class="row" style="margin-bottom: 10px; padding: 3.5rem"><div class="col-sm-3 col-xs-3" style="padding: 0 10px 0 20px; margin-top: 5px">标题：</div><div class="col-sm-7 col-xs-8 " style="margin-bottom: 10px;"><label for="inputfile" id="TradeTitle">' + y.TradeTitle + '</label></div><div class="col-sm-3 col-xs-3" style="padding: 0 10px 0 20px; margin-top: 5px">展会时间：</div><div class="col-sm-7 col-xs-8 " style="margin-bottom: 10px;"><label for="inputfile" id="TradeTime">' + a + '</label></div><div class="col-sm-3 col-xs-3" style="padding: 0 10px 0 20px; margin-top: 5px">展会地点：</div><div class="col-sm-7 col-xs-8 " style="margin-bottom: 10px;"><label for="inputfile" id="TradeAddress">' + y.TradeAddress + '</label></div><div class="col-sm-3 col-xs-3" style="padding: 0 10px 0 20px; margin-top: 5px">展会简介：</div><div class="col-sm-7 col-xs-8 " style="margin-bottom: 10px;"><label for="inputfile" id="TradeIntroduction">' + y.TradeIntroduction + '</label></div><div class="col-sm-3 col-xs-3" style="padding: 0 10px 0 20px; margin-top: 5px">展会内容：</div><div class="col-sm-7 col-xs-8 " style="margin-bottom: 10px;"><label for="inputfile" id="TradeContact">' + y.TradeInfo + '</label></div><div class="col-sm-3 col-xs-3" style="padding: 0 10px 0 20px; margin-top: 5px">展会联系人：</div><div class="col-sm-7 col-xs-8 " style="margin-bottom: 10px;"><label for="inputfile" id="ReaderID">' + y.TradeContact + '</label></div><div class="col-sm-3 col-xs-3" style="padding: 0 10px 0 20px; margin-top: 5px"></div></div>')
+
+                    }
+                    
+                    $($("[name='Confirm']")).bind("click", function () {
+                        Confirm($(this).val());
+                        IndexAjax();
+                    });
+                    $($("[name='CheckConfirm']")).bind("click", function () {
+                        CheckConfirm($(this).val());
+                        IndexAjax();
+                    });
+                    $($("[name='VisaAdd']")).bind("click", function () {
+                        var test = $(this).val();
+                        var x = test.indexOf(",");
+                        var y = test.substring(0, x);
+                        var z = test.substring(x+1, test.length);
+                        VisaAdd(y,z);
+                        IndexAjax();
+                    });
+                })
+    }
+
+    function Confirm(id) {
+        $.post('@Url.Action("Confirm", "TradeExamine")', { id: id },
+                         function (result) {
+                             if (result == "反馈成功") {
+                                 alert(result);
+                                 window.location.reload();
+                             }
+                             else {
+                                 alert(result);
+                             }
+                         }
+
+                     )
+    }
+
+    function CheckConfirm(id) {
+        $.post('@Url.Action("CheckConfirm", "TradeExamine")', { id: id },
+                             function (result) {
+                                 IndexAjax();
+                                 $('#CheckConfirm').empty();
+                                 $('#CheckConfirm').append(result.TradeExamineFeedback);
+
+                             }
+                         )
+    }
+
+    function VisaAdd(id, TradeExamineID) {
+        $.post('@Url.Action("VisaAdd", "TradeExamine")', { CompanyID: id, TradeExamineID: TradeExamineID },
+                                function (result) {
+                                    if (result == "签证受理成功") {
+                                        alert(result);
+                                        window.location.href = '../TradeExamine/TradeExamineDetail?ID=' + UrlSearch() + '';
+                                    }
+                                    else {
+                                        alert(result);
+                                    }
+                                }
+                             )
+    }
+
+@*    function Finish(id) {
+        $.post('@Url.Action("Finish", "TradeExamine")', { id: id },
+                         function (result) {
+                             if (result == "申请完成") {
+                                 alert(result);
+                                 //window.location.href = '../TradeExamine/TradeExamineDetail?ID=' + id + '';
+                             }
+                             else {
+                                 alert(result);
+                             }
+                         }
+
+                     )
+    }*@
+
+    $(function () {
+        IndexAjax(UrlSearch());
+        $('#box1_k').on("click", "tr", function () {
+            $(this).parent().find("tr.focus").toggleClass("focus");
+            $(this).toggleClass("focus");
+            xa = $(this).attr("id");
+        })
+
+
+        $("#Detail").click(function () {
+            if (xa == undefined || xa == "" || xa == null) {
+                alert("请选中一行");
+                return false;
+            }
+            DetailAjax(xa);
+        });
+
+        $("#BtnPass").click(function () {
+            var arr1 = [];
+            var a = document.getElementsByName('choice');
+            for (var i = 0; i < a.length; i++) {
+                if (a[i].checked == true) {
+                    arr1.push(a[i].value);
+                }
+            }
+            if (arr1.length != 0) {
+                $.post(
+                        '@Url.Action("Pass", "TradeExamine")',
+                    "arr=" + arr1,
+                    function (result) {
+                        IndexAjax(UrlSearch());
+                        document.getElementById("allcheck").checked = false;
+                    }
+                )
+            }
+        })
+        $("#BtnNoPass").click(function () {
+            var arr1 = [];
+            var a = document.getElementsByName('choice');
+            for (var i = 0; i < a.length; i++) {
+                if (a[i].checked == true) {
+                    arr1.push(a[i].value);
+                }
+            }
+            if (arr1.length != 0) {
+                $.post(
+                        '@Url.Action("NoPass", "TradeExamine")',
+                    "arr=" + arr1,
+                    function (result) {
+                        IndexAjax(UrlSearch());
+                        document.getElementById("allcheck").checked = false;
+                    }
+                )
+            }
+        })
+
+    })
+
+    function demo() {
+        var allcheck = document.getElementById("allcheck");
+        var choice = document.getElementsByName("choice");
+        for (var i = 0; i < choice.length; i++) {
+            choice[i].checked = allcheck.checked;
+        }
+    }
+
+    //点击子复选框,全选框 选中、取消
+    function setAll() {
+        if (!$(".checkbox-template").checked) {
+            $("#allcheck").prop("checked", false); // 子复选框某个不选择，全选也被取消
+        }
+        var choicelength = $("input[type='checkbox'][class='checkbox-template']").length;
+        var choiceselect = $("input[type='checkbox'][class='checkbox-template']:checked").length;
+
+        if (choicelength == choiceselect + 1) {
+            $("#allcheck").prop("checked", true);   // 子复选框全部部被选择，全选也被选择；1.对于HTML元素我们自己自定义的DOM属性，在处理时，使用attr方法；2.对于HTML元素本身就带有的固有属性，在处理时，使用prop方法。
+        }
+
+    }
+
+
+</script>
+
+<div style="padding-top: 2.5rem; padding-right: 2.5rem; padding-left: 2.5rem;">
+    <div style="background: #fff">
+        <div id="box1_k">
+        </div>
+
+
+        <div class="row" style="text-align: end; padding: 2.5rem">
+            <div class="col-md-12  col-xs-12">
+                <button type="button" style="background: #796AEE; color: #fff" class="btn btn-default" id="BtnPass">通过</button>
+                <button type="button" style="background: #796AEE; color: #fff" class="btn btn-default" id="BtnNoPass">驳回</button>
+                <a href="../TradeExamine/TradeExamineIndex" style="background: #796AEE; color: #fff" class="btn btn-default">返回</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="myModalDetail" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="myModalLabel">反馈详细</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+
+            </div>
+            <div class="modal-body">
+                <div class="row" style="margin-bottom: 10px;">
+                    <div class="col-sm-3 col-xs-3" style="padding: 0 10px 0 20px; margin-top: 5px">反馈信息：</div>
+                    <div class="col-sm-7 col-xs-8 " style="margin-bottom: 10px;">
+                        <textarea class="form-control" id="CheckConfirm" rows="3" style="resize: none" readonly="readonly"></textarea>
+                    </div>
+
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+            </div>
+        </div>
+    </div>
+</div>

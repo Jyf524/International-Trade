@@ -1,0 +1,269 @@
+﻿@{
+    ViewBag.Title = "AnnualReviewUpload";
+    Layout = "~/Views/Shared/ForeLayout.cshtml";
+}
+<link href="~/Content/css/fileinput.css" rel="stylesheet" />
+<link href="~/Content/css/fileinput.min.css" rel="stylesheet" />
+
+
+<script src="~/Scripts/fileinput.min.js"></script>
+<script src="~/Scripts/fileinput.js"></script>
+<script src="~/Scripts/fileinput_locale_zh.js"></script>
+
+
+<script src="~/Content/JYF/alert.js"></script>
+<link href="~/Content/JYF/alert.css" rel="stylesheet" />
+
+<script>
+
+    var M = {
+
+    }
+
+    function Back() {
+
+        window.location.href = '../Personal/AnnualReview';
+    }
+
+    $(function () {
+        $("[class='kv-upload-progress hide']").hide();
+        $("[class='btn btn-default kv-fileinput-upload fileinput-upload-button']").hide();
+        $("[class='hide btn btn-default fileinput-cancel fileinput-cancel-button']").hide();
+        $("[class='btn btn-default fileinput-remove fileinput-remove-button']").hide();
+
+
+    })
+
+    function upload() {
+
+        var fd = new FormData();
+        fd.append("PayCard", $('#file-0')[0].files[0]);
+        for (var i = 0; i < arr.length; i++) {
+            fd.append("file", arr[i]);
+            fd.append("ExamineName", $('#ExamineName').val());
+        }
+        $.ajax({
+            url: "@Url.Action("AnnualReviewUpload1", "Personal")",//调用控制器中的方法
+            type: "post",
+            dataType: "json",
+            data: fd,
+            async: false,
+            cache: false,
+            contentType: false,
+            processData: false,
+            success: function (data) {
+                if (data == "申请成功") {
+
+                    if (M.dialog2) {
+                        return M.dialog2.show();
+                    }
+                    M.dialog2 = jqueryAlert({
+                        'width': '200px',
+                        'height': '100px',
+                        'content': '申请成功!',
+                        'modal': true,
+                        'buttons': {
+                            '确定': function () {
+                                M.dialog2.close();
+                                window.location.href = "/Personal/AnnualReview";
+                            }
+                        }
+                    })
+
+                    
+                }
+                else {
+                    if (M.dialog2) {
+                        return M.dialog2.show();
+                    }
+                    M.dialog2 = jqueryAlert({
+                        'width': '200px',
+                        'height': '100px',
+                        'content': ''+data+'',
+                        'modal': true,
+                        'buttons': {
+                            '确定': function () {
+                                M.dialog2.close();
+                            }
+                        }
+                    })
+                }
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                /*弹出jqXHR对象的信息*/
+                console.log(jqXHR.responseText, jqXHR.status, jqXHR.readyState, jqXHR.statusText, textStatus, errorThrown);
+
+            }
+        });
+    }
+
+
+    var arr = new Array();
+    function inputfile() {
+        if (arr.length == 2) {
+            arr[1] = ($('#file-1')[0].files[1]);
+        }
+        else {
+            arr.push($('#file-1')[0].files[0]);
+            if ($('#file-1')[0].files[1] != null) {
+                arr.push($('#file-1')[0].files[1]);
+            }
+        }
+
+    }
+
+</script>
+
+<div class="container-fluid">
+    <div class="row xs" style="height: 50px;">
+        <div class="bs-example bs-navbar-top-example" data-example-id="navbar-static-top">
+            <nav class="navbar navbar-default navbar-static-top">
+                <!-- We use the fluid option here to avoid overriding the fixed width of a normal container within the narrow content columns. -->
+                <div class="container-fluid">
+                    <div class="navbar-header" style="height: 50px;">
+                        <div style="font-size: 16px; line-height: 50px;">
+                            <a class="navbar-brand" href="../Personal/AnnualReview"><span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span></a>
+                            <p style="text-align: center; width: 96%; height: 100%;">年审材料上传<button  style="border:0;background:none;float:right" onclick="upload()" type="button" ><span class="glyphicon glyphicon-ok" style="font-size:18px;color:#777" aria-hidden="true"></span></button></p>
+                            
+                        </div>
+
+                    </div>
+
+                </div>
+            </nav>
+        </div>
+    </div>
+</div>
+
+
+
+
+<div style="padding-left: 20px; padding-right: 20px; height: 80%">
+
+        <div class="row" style="font-size: 16px; margin-top: 30px">
+        <div class="col-xs-5 col-sm-5">
+
+            <p style="float: right; line-height: 44px;"> 年审名称:</p>
+
+        </div>
+        <div class="col-xs-6 col-sm-6">
+             <input type="text" style="width: auto" class="form-control" id="ExamineName" name="ExamineName" placeholder="请输入年审名称">
+        </div>
+
+    </div>
+
+    <div class="row" style="font-size: 16px; margin-top: 30px">
+        <div class="col-xs-5 col-sm-5">
+
+            <p style="float: right; line-height: 44px;">付款凭证(1张):</p>
+
+        </div>
+        <div class="col-xs-6 col-sm-6">
+            <input id="file-0" name="file1" type="file" multiple class="file" data-show-preview="false" data-overwrite-initial="false" data-min-file-count="1" >
+        </div>
+
+    </div>
+
+    <div class="row" style="font-size: 16px; margin-top: 30px">
+        <div class="col-xs-12 col-sm-12">
+           
+        </div>
+
+    </div>
+
+    <div class="row" style="font-size: 16px; margin-top: 30px">
+        <div class="col-xs-5 col-sm-5">
+
+            <p style="float: right; line-height: 44px;">营业执照(2张):</p>
+
+        </div>
+        <div class="col-xs-6 col-sm-6">
+             <input id="file-1" name="file2" onchange="inputfile()" type="file" multiple class="file" data-show-preview="false" data-overwrite-initial="false" data-min-file-count="2" >
+        </div>
+
+    </div>
+
+    <div class="row" style="font-size: 16px; margin-top: 30px">
+        <div class="col-xs-12 col-sm-12">
+            <div class="form-group">
+                  
+                </div>
+        </div>
+         <div class="row" style="font-size: 16px; margin-top: 30px">
+
+
+@*        <div class="col-xs-12 col-md-12" style="margin-top: 20px; padding: 0px;">
+            <button type="button" class="btn_sure btn_PhoneOperation" onclick="Back()">提 交</button>
+        </div>*@
+
+    </div>
+    </div>
+
+   
+</div>
+
+
+<script>
+    $('#file-0').fileinput({
+        language: 'zh', //设置语言
+        //uploadUrl: uploadUrl, //上传的地址
+        uploadUrl: "/FileUpload/Upload", //上传的地址
+        allowedFileExtensions: ['jpg', 'png', 'gif'],//接收的文件后缀,
+        maxFileCount: 1,
+        enctype: 'multipart/form-data',
+        showUpload: true, //是否显示上传按钮
+        showCaption: true,//是否显示标题
+        browseClass: "btn btn-primary", //按钮样式             
+        previewFileIcon: "<i class='glyphicon glyphicon-king'></i>",
+        msgFilesTooMany: "选择上传的文件数量({n}) 超过允许的最大数值{m}！"
+    });
+    $('#file-1').fileinput({
+        language: 'zh', //设置语言
+        //uploadUrl: uploadUrl, //上传的地址
+        uploadUrl: "/FileUpload/Upload", //上传的地址
+        allowedFileExtensions: ['jpg', 'png', 'gif'],//接收的文件后缀,
+        maxFileCount: 2,
+        enctype: 'multipart/form-data',
+        showUpload: true, //是否显示上传按钮
+        showCaption: true,//是否显示标题
+        browseClass: "btn btn-primary", //按钮样式             
+        previewFileIcon: "<i class='glyphicon glyphicon-king'></i>",
+        msgFilesTooMany: "选择上传的文件数量({n}) 超过允许的最大数值{m}！",
+        fileActionSettings: {
+            removeClass: 'hideBtn'
+        }
+    })
+
+</script>
+
+
+<style>
+    .btn_PhoneOperation {
+        border: 0px;
+        text-shadow: none;
+        background: 0px;
+        font-weight: 500;
+        padding-left: 0px;
+        -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+        outline: none;
+        height: 34px;
+        padding: 6px 12px;
+        font-size: 14px;
+        width: 100%;
+        color: #999;
+    }
+
+    .btn_sure {
+        text-shadow: none;
+        background-color: #e64a4a;
+        color: #fff;
+        display: block;
+        width: 98%;
+        height: 3rem;
+        font-size: 1.6rem;
+        margin: 0 auto;
+        text-align: center;
+        border-radius: 2rem;
+        margin-bottom: 1rem;
+    }
+</style>

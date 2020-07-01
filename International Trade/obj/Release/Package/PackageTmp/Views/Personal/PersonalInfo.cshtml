@@ -1,0 +1,305 @@
+﻿@{
+    ViewBag.Title = "PersonalInfo";
+    Layout = "~/Views/Shared/ForeLayout.cshtml";
+}
+
+
+<script src="~/Content/JYF/jquery-1.9.0.min.js"></script>
+<script src="~/Content/JYF/alert.js"></script>
+<link href="~/Content/JYF/alert.css" rel="stylesheet" />
+<script>
+
+    var M = {
+
+    }
+
+
+    var xa;
+
+    function UrlSearch() {
+        var name, id;
+        var str = location.href; //获取到整个地址
+        var num = str.indexOf("?")
+        str = str.substr(num + 1); //取得num+1后所有参数，这里的num+1是下标 str.substr(start [, length ]
+        var arr = str.split("&"); //以&分割各个参数放到数组里
+        for (var i = 0; i < arr.length; i++) {
+            num = arr[i].indexOf("=");
+            if (num > 0) {
+                id = arr[i].substring(0, num);
+                id = arr[i].substr(num + 1);
+                this[name] = id;
+                return id;
+            }
+        }
+    }
+
+
+    $(function DetailAjax() {
+
+        $.post('@Url.Action("PersonalInfo1", "Personal")', { id: UrlSearch() },
+
+                    function (result1) {
+                        var result = result1.aa[0];
+                        $('#UserName').val(result.UserName);
+                        $('#CompanyName').val(result.CompanyName);
+                        $('#CompanyContact').val(result.CompanyContact);
+                        $('#ContactAddress').val(result.ContactAddress);
+                        $('#ContactType').val(result.ContactType);
+                        $('#CompanyQQ').val(result.CompanyQQ);
+                        $('#Email').val(result.Email);
+                        $('#Zip').val(result.Zip);
+                    }
+
+                )
+    })
+
+        function Save() {
+            xa = UrlSearch();
+            SaveAjax(xa);
+        }
+
+        function SaveAjax(id) {
+            
+            $.post('@Url.Action("PersonalInfoSave", "Personal")', { UserName: $("#UserName").val(), CompanyName: $("#CompanyName").val(), CompanyContact: $("#CompanyContact").val(), ContactAddress: $("#ContactAddress").val(), ContactType: $("#ContactType").val(), CompanyQQ: $("#CompanyQQ").val(), Email: $("#Email").val(), Zip: $("#Zip").val(), id: id },
+                          function (result) {
+                              if (result == "修改成功") {
+
+                                  if (M.dialog2) {
+                                      return M.dialog2.show();
+                                  }
+                                  M.dialog2 = jqueryAlert({
+                                      'width': '200px',
+                                      'height': '100px',
+                                      'content': '修改成功',
+                                      'modal': true,
+                                      'buttons': {
+                                          '确定': function () {
+                                              M.dialog2.close();
+                                              window.location.href = "../Personal/PersonalIndex";
+                                          }
+                                      }
+                                  })
+
+
+                              }
+                              else {
+                                  if (M.dialog2) {
+                                      return M.dialog2.show();
+                                  }
+                                  M.dialog2 = jqueryAlert({
+                                      'width': '200px',
+                                      'height': '100px',
+                                      'content': '' + result + '',
+                                      'modal': true,
+                                      'buttons': {
+                                          '确定': function () {
+                                              M.dialog2.close();
+                                          }
+                                      }
+                                  })
+                              }
+                          }
+
+                      )
+    }
+
+</script>
+
+<div class="container-fluid">
+    <div class="row xs" style="height: 50px;">
+        <div class="bs-example bs-navbar-top-example" data-example-id="navbar-static-top">
+            <nav class="navbar navbar-default navbar-static-top">
+                <!-- We use the fluid option here to avoid overriding the fixed width of a normal container within the narrow content columns. -->
+                <div class="container-fluid">
+                    <div class="navbar-header" style="height:50px;">
+                        <div style="font-size: 16px; line-height: 50px;">
+                            <a class="navbar-brand" href="../Personal/PersonalIndex"><span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span></a>
+                            <p style="text-align: center;width: 86%;height: 100%;">个人信息</p>
+                        </div>
+                    </div>
+
+                </div>
+            </nav>
+        </div>
+    </div>
+</div>
+
+
+
+<div class="container-fluid">
+
+@*    <div class="row" style="text-align: left; margin-top: 10px; background: #fff;">
+
+        <div class="col-xs-4 col-md-4" style="height: 45px; line-height: 45px; color: #222222; font-size: 1.4rem;">
+            <div>
+                用户昵称
+            </div>
+        </div>
+        <div class="col-xs-8 col-md-8" style="height: 45px; line-height: 45px; text-align: right; color: #999999">
+            <div>
+                <input type="text" class="btn_PhoneOperation" placeholder="请输入用户昵称" id="UserName">
+            </div>
+        </div>
+
+        <div class="col-xs-12 col-md-12" style="border-bottom: 1px #ededed solid; margin: 0 auto; text-align: center;"></div>
+
+
+    </div>*@
+    <div class="row" style="text-align: left; background: #fff;">
+
+        <div class="col-xs-4 col-md-4" style="height: 45px; line-height: 45px; color: #222222; font-size: 1.4rem;">
+            <div>
+                企业名称
+            </div>
+        </div>
+        <div class="col-xs-8 col-md-8" style="height: 45px; line-height: 45px; text-align: right; color: #999999">
+            <div>
+                <input type="text" class="btn_PhoneOperation" placeholder="请输入企业名称" id="CompanyName">
+            </div>
+        </div>
+
+        <div class="col-xs-12 col-md-12" style="border-bottom: 1px #ededed solid; margin: 0 auto; text-align: center;"></div>
+
+
+    </div>
+    <div class="row" style="text-align: left; background: #fff;">
+
+        <div class="col-xs-4 col-md-4" style="height: 45px; line-height: 45px; color: #222222; font-size: 1.4rem;">
+            <div>
+                企业联系人
+            </div>
+        </div>
+        <div class="col-xs-8 col-md-8" style="height: 45px; line-height: 45px; text-align: right; color: #999999">
+            <div>
+                <input type="text" class="btn_PhoneOperation" placeholder="请输入企业联系人" id="CompanyContact">
+            </div>
+        </div>
+
+        <div class="col-xs-12 col-md-12" style="border-bottom: 1px #ededed solid; margin: 0 auto; text-align: center;"></div>
+
+
+    </div>
+    <div class="row" style="text-align: left;  background: #fff;">
+
+        <div class="col-xs-4 col-md-4" style="height: 45px; line-height: 45px; color: #222222; font-size: 1.4rem;">
+            <div>
+                通讯地址
+            </div>
+        </div>
+        <div class="col-xs-8 col-md-8" style="height: 45px; line-height: 45px; text-align: right; color: #999999">
+            <div>
+                <input type="text" class="btn_PhoneOperation" placeholder="请输入通讯地址" id="ContactAddress">
+            </div>
+        </div>
+
+        <div class="col-xs-12 col-md-12" style="border-bottom: 1px #ededed solid; margin: 0 auto; text-align: center;"></div>
+
+
+    </div>
+    <div class="row" style="text-align: left; background: #fff;">
+
+        <div class="col-xs-4 col-md-4" style="height: 45px; line-height: 45px; color: #222222; font-size: 1.4rem;">
+            <div>
+                联系方式
+            </div>
+        </div>
+        <div class="col-xs-8 col-md-8" style="height: 45px; line-height: 45px; text-align: right; color: #999999">
+            <div>
+                <input type="text" class="btn_PhoneOperation" placeholder="请输入联系方式" id="ContactType">
+            </div>
+        </div>
+
+        <div class="col-xs-12 col-md-12" style="border-bottom: 1px #ededed solid; margin: 0 auto; text-align: center;"></div>
+
+
+    </div>
+    <div class="row" style="text-align: left; background: #fff;">
+
+        <div class="col-xs-4 col-md-4" style="height: 45px; line-height: 45px; color: #222222; font-size: 1.4rem;">
+            <div>
+                企业QQ
+            </div>
+        </div>
+        <div class="col-xs-8 col-md-8" style="height: 45px; line-height: 45px; text-align: right; color: #999999">
+            <div>
+                <input type="text" class="btn_PhoneOperation" placeholder="请输入企业QQ" id="CompanyQQ">
+            </div>
+        </div>
+
+        <div class="col-xs-12 col-md-12" style="border-bottom: 1px #ededed solid; margin: 0 auto; text-align: center;"></div>
+
+
+    </div>
+    <div class="row" style="text-align: left; background: #fff;">
+
+        <div class="col-xs-4 col-md-4" style="height: 45px; line-height: 45px; color: #222222; font-size: 1.4rem;">
+            <div>
+                邮箱
+            </div>
+        </div>
+        <div class="col-xs-8 col-md-8" style="height: 45px; line-height: 45px; text-align: right; color: #999999">
+            <div>
+                <input type="text" class="btn_PhoneOperation" placeholder="请输入邮箱" id="Email">
+            </div>
+        </div>
+
+        <div class="col-xs-12 col-md-12" style="border-bottom: 1px #ededed solid; margin: 0 auto; text-align: center;"></div>
+
+
+    </div>
+    <div class="row" style="text-align: left; background: #fff;">
+
+        <div class="col-xs-4 col-md-4" style="height: 45px; line-height: 45px; color: #222222; font-size: 1.4rem;">
+            <div>
+                邮编
+            </div>
+        </div>
+        <div class="col-xs-8 col-md-8" style="height: 45px; line-height: 45px; text-align: right; color: #999999">
+            <div>
+                <input type="text" class="btn_PhoneOperation" placeholder="请输入邮编" id="Zip">
+            </div>
+        </div>
+
+        <div class="col-xs-12 col-md-12" style="border-bottom: 1px #ededed solid; margin: 0 auto; text-align: center;"></div>
+
+
+    </div>
+
+    <div class="col-xs-12 col-md-12" style="margin-top: 20px;">
+        <button type="button" class="btn_sure btn_PhoneOperation" onclick="Save()">确 认</button>
+    </div>
+
+</div>
+
+
+<style>
+    .btn_PhoneOperation {
+        border: 0px;
+        text-shadow: none;
+        background: 0px;
+        font-weight: 500;
+        padding-left: 0px;
+        -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+        -webkit-user-modify: read-write-plaintext-only;
+        outline: none;
+        height: 34px;
+        padding: 6px 12px;
+        font-size: 14px;
+        width: 100%;
+        color: #999;
+    }
+
+    .btn_sure {
+        text-shadow: none;
+        background-color: #e64a4a ;
+        color: #fff;
+        display: block;
+        width: 98%;
+        height: 3rem;
+        font-size: 1.6rem;
+        margin: 0 auto;
+        text-align: center;
+        border-radius: 2rem;
+        margin-bottom: 1rem;
+    }
+</style>

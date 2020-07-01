@@ -1,0 +1,120 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Login</title>
+</head>
+<body>
+        <script src="~/Scripts/jquery.min.js"></script>
+        <script src="~/Scripts/bootstrap.min.js"></script>
+        <script src="~/Scripts/jquery.validate.min.js"></script>
+        <script src="~/Scripts/front.js"></script>
+    <script src="~/Content/JYF/alert.js"></script>
+    <link href="~/Content/JYF/alert.css" rel="stylesheet" />
+    <script>
+
+        var M = {
+
+        }
+
+        $(function () {
+            $("#btn_Login").click(function () {
+                $.post(
+                    '@Url.Action("Login1", "ForeExhibition")',
+                   { UserName: $("#UserName").val(), PassWord: $("#Password").val(), Code: $("#Code").val() },
+                function (result) {
+                    if (result == "登录成功") {
+                        if (M.dialog2) {
+                            return M.dialog2.show();
+                        }
+                        M.dialog2 = jqueryAlert({
+                            'width': '200px',
+                            'height': '100px',
+                            'content': '登录成功!',
+                            'modal': true,
+                            'buttons': {
+                                '确定': function () {
+                                    M.dialog2.close();
+                                    window.location.href = '../ForeExhibition/ForeExhibitionIndex';
+                                }
+                            }
+                        })
+                        return;
+                    }
+                    if (result == "系统管理员登录成功") {
+                        alert(result);
+                        window.location.href = '../../BackManager/UserManager/UserManagerIndex';
+                        return;
+                    }
+                    if (result == "出认证处管理员登录成功") {
+                        alert(result);
+                        window.location.href = '../../BackManager/Examine/ExamineIndex';
+                        return;
+                    }
+                    if (result == "国际展览部管理员登录成功") {
+                        alert(result);
+                        window.location.href = '../../BackManager/TradeInfo/TradeInfoIndex';
+                        return;
+                    }
+                    alert(result);
+                });
+            });
+
+        });
+
+    </script>
+
+    <div class="page login-page">
+        <div class="container d-flex align-items-center">
+            <div class="form-holder has-shadow">
+                <div class="row">
+                    <!-- Logo & Information Panel-->
+                    <div class="col-lg-6">
+                        <div class="info d-flex align-items-center" style="height: 250px;">
+                            <div class="content">
+                                <div class="logo">
+                                    <h1>登录</h1>
+                                </div>
+                                <p>Login</p>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Form Panel    -->
+                    <div class="col-lg-6 bg-white">
+                        <div class="form d-flex align-items-center">
+                            <div class="content">
+                                <form method="post" class="form-validate">
+                                    <div class="form-group">
+                                        <input id="UserName" type="text" name="UserName" required data-msg="请输入用户名" class="input-material">
+                                        <label for="UserName" class="label-material">用户名</label>
+                                    </div>
+                                    <div class="form-group">
+                                        <input id="Password" type="password" name="Password" required data-msg="请输入密码" class="input-material">
+                                        <label for="Password" class="label-material">密码</label>
+                                    </div>
+                                    <div class="form-group">
+                                        <input id="Code" type="text" name="Code" required data-msg="请输入验证码" class="input-material" style="width: 50%">
+                                        <label for="Code" class="label-material">验证码</label>
+                                        <img src="~/Tool/ValidateCode.aspx" onclick="this.src='../Tool/ValidateCode.aspx?'+Math.random();" id="imgValidateCode" />
+                                    </div>
+                                    <button type="button" id="btn_Login" style="background: #796AEE; color: #fff" class="btn btn-default">登录</button>
+                                    <!-- This should be submit button but I replaced it with <a> for demo purposes-->
+                                </form>
+                                <br>
+                                <small>没有账号?</small><a href="../ForeExhibition/Register" class="signup">点击注册</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</body>
+</html>

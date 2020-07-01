@@ -1,0 +1,94 @@
+﻿@{
+    ViewBag.Title = "LeaveMessage";
+    Layout = "~/Areas/BackManager/Views/Shared/Back_Layout.cshtml";
+}
+
+<script>
+
+    function UrlSearch() {
+        var name, id;
+        var str = location.href; //获取到整个地址
+        var num = str.indexOf("?")
+        str = str.substr(num + 1); //取得num+1后所有参数，这里的num+1是下标 str.substr(start [, length ]
+        var arr = str.split("&"); //以&分割各个参数放到数组里
+        for (var i = 0; i < arr.length; i++) {
+            num = arr[i].indexOf("=");
+            if (num > 0) {
+                id = arr[i].substring(0, num);
+                id = arr[i].substr(num + 1);
+                this[name] = id;
+                return id;
+            }
+        }
+    }
+
+    $(function IndexAjax(id) {
+        $.get('@Url.Action("LeaveMessage1", "TradeInfo")', { id: UrlSearch() },//url: 获取服务器数据的地址 date:向服务器传递的参数 callback: 回调函数，在服务器响应后，页面更新前执行
+        function (result) {
+            $('#box1_k').empty();
+            $.each(result.aa, function (Index, list) {
+                var a = ChangeDateFormat(list.MessageTime);
+                $('#box1_k').append('<div style="height: 100px; margin-top: 15px;"><div style="float: left"><img src="../../Content/img/222.png" width="100"></div><div class="comment-post well" style="float: left; width: 1000px; background: #fff;"><div class="comment-body" style="margin-left: 20px;"><p class="uname"><b>' + list.UserName + '</b></p><p>' + list.MessageInfo + '</p></div><div class="comment-meta" style="margin-left: 20px;"><a class="posted">' + a + '</a></div></div></div></div>')
+            })
+        })
+    })
+
+    function ChangeDateFormat(jsondate) {
+        jsondate = jsondate.replace("/Date(", "").replace(")/", "");
+        if (jsondate.indexOf("+") > 0) {
+            jsondate = jsondate.substring(0, jsondate.indexOf("+"));
+        }
+        else if (jsondate.indexOf("-") > 0) {
+            jsondate = jsondate.substring(0, jsondate.indexOf("-"));
+        }
+        var date = new Date(parseInt(jsondate, 10));
+        var month = date.getMonth() + 1 < 10 ? "0" + (date.getMonth() + 1) : date.getMonth() + 1;
+        var currentDate = date.getDate() < 10 ? "0" + date.getDate() : date.getDate();
+        return date.getFullYear() + "-" + month + "-" + currentDate;
+    };
+
+</script>
+
+<link href="~/Content/Jyf.css" rel="stylesheet" />
+
+<div style="padding-top: 2.5rem; padding-right: 2.5rem; padding-left: 2.5rem;">
+
+    <div id="box1_k"></div>
+
+
+
+
+    <div class="row" style="margin-right: 100px; float: right;">
+        <div class="col-md-12  col-xs-12">
+            <a href="../TradeInfo/TradeInfoIndex" style="background: #796AEE; color: #fff" class="btn btn-default">返回</a>
+        </div>
+
+    </div>
+
+
+    <div class="modal fade" id="myModalCallBack" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="myModalLabel">留言回复</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+
+                </div>
+                <div class="modal-body">
+                    <div class="row" style="margin-bottom: 10px;">
+                        <div class="col-sm-3 col-xs-3" style="padding: 0 10px 0 20px; margin-top: 5px">回复内容：</div>
+                        <div class="col-sm-7 col-xs-8 " style="margin-bottom: 10px;">
+                            <textarea class="form-control" rows="3" name="textarea"></textarea>
+                            @*<input type="text" name="EnterpriseName" id="EnterpriseName" class="form-control" placeholder="请输入企业名称" />*@
+                        </div>
+
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                    <button type="button" class="btn btn-primary" onclick="Add()">保存</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

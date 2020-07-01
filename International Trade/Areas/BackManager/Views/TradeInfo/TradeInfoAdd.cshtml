@@ -1,0 +1,162 @@
+﻿@{
+    ViewBag.Title = "TradeInfoAdd";
+    Layout = "~/Areas/BackManager/Views/Shared/Back_Layout.cshtml";
+}
+<link href="~/Content/css/fileinput.min.css" rel="stylesheet" />
+<link href="~/Content/css/fileinput.css" rel="stylesheet" />
+
+<script src="~/Scripts/fileinput.min.js"></script>
+<script src="~/Scripts/fileinput.js"></script>
+<script src="~/Scripts/fileinput_locale_zh.js"></script>
+
+<script>
+
+
+    @*function Add() {
+        $.post('@Url.Action("TradeInfoAdd1", "TradeInfo")', { TradeTitle: $("#TradeTitle").val(), TradeAddress: $("#TradeAddress").val(), TradeInfo: $("#TradeInfo").val(), TradeTime: $("#TradeTime").val(), TradeIntroduction: $("#TradeIntroduction").val(), TradeContact: $("#TradeContact").val(), Fax: $("#Fax").val(), ContactPhone: $("#ContactPhone").val() },//url: 获取服务器数据的地址 date:向服务器传递的参数 callback: 回调函数，在服务器响应后，页面更新前执行
+                        function (result) {
+                            if (result == "添加成功！") {
+                                alert(result);
+                                window.location.href = '../TradeInfo/TradeInfoIndex';
+                            }
+                            else {
+                                alert(result);
+                            }
+                        }
+                        )
+    }*@
+
+    function Back() {
+        window.location.href = '../TradeInfo/TradeInfoIndex';
+    }
+
+
+
+    $('#file-0').fileinput({
+        language: 'zh', //设置语言
+        //uploadUrl: uploadUrl, //上传的地址
+        uploadUrl: "/FileUpload/Upload", //上传的地址
+        allowedFileExtensions: ['jpg', 'png', 'gif', 'txt', 'doc', 'docx'],//接收的文件后缀,
+        maxFileCount: 1,
+        enctype: 'multipart/form-data',
+        browseClass: "btn btn-primary", //按钮样式             
+        previewFileIcon: "<i class='glyphicon glyphicon-king'></i>",
+        msgFilesTooMany: "选择上传的文件数量({n}) 超过允许的最大数值{m}！",
+
+    });
+
+    $(function () {
+        $("[class='kv-upload-progress hide']").hide();
+        $("[class='btn btn-default kv-fileinput-upload fileinput-upload-button']").hide();
+        $("[class='hide btn btn-default fileinput-cancel fileinput-cancel-button']").hide();
+        $("[class='btn btn-default fileinput-remove fileinput-remove-button']").hide();
+        $("[class='file-input file-input-new']").addClass("s");
+
+
+    })
+
+    function upload() {
+
+        var fd = new FormData();
+
+        fd.append("TradeImg", $('#file-0')[0].files[0]);
+        fd.append("TradeTitle", $('#TradeTitle').val());
+        fd.append("TradeTime", $('#TradeTime').val());
+        fd.append("TradeAddress", $('#TradeAddress').val());
+        fd.append("TradeIntroduction", $('#TradeIntroduction').val());
+        fd.append("TradeInfo", $('#TradeInfo').val());
+        fd.append("TradeContact", $('#TradeContact').val());
+        fd.append("Fax", $('#Fax').val());
+        fd.append("ContactPhone", $('#ContactPhone').val());
+
+
+        $.ajax({
+            url: "@Url.Action("TradeInfoAdd1", "TradeInfo")",//调用控制器中的方法
+            type: "post",
+            dataType: "json",
+            data: fd,
+            async: false,
+            cache: false,
+            contentType: false,
+            processData: false,
+            success: function (data) {
+                if (data == "添加成功") {
+                    alert(data);
+                    window.location.href = "../TradeInfo/TradeInfoIndex";
+                }
+                else {
+                    alert(data);
+                }
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                /*弹出jqXHR对象的信息*/
+                console.log(jqXHR.responseText, jqXHR.status, jqXHR.readyState, jqXHR.statusText, textStatus, errorThrown);
+
+            }
+        });
+    }
+
+
+</script>
+
+<style>
+    .s {
+        width: 100%;
+    }
+</style>
+
+<header class="page-header">
+    <div class="container-fluid">
+        <h2 class="no-margin-bottom">商展信息添加页</h2>
+    </div>
+</header>
+
+
+
+<div style="padding-top: 2.5rem; padding-right: 2.5rem; padding-left: 2.5rem;">
+    <div style="background: #fff">
+        <div class="row" style="margin-bottom: 10px; padding: 1.5rem">
+            <div class="col-sm-3 col-xs-3" style="padding: 0 10px 0 20px; margin-top: 5px">商展图片：</div>
+            <div class="col-sm-7 col-xs-8 " style="margin-bottom: 10px;">
+                <input id="file-0" name="file1" type="file" class="file" data-overwrite-initial="false" data-min-file-count="1">
+            </div>
+            <div class="col-sm-3 col-xs-3" style="padding: 0 10px 0 20px; margin-top: 5px">标题：</div>
+            <div class="col-sm-7 col-xs-8 " style="margin-bottom: 10px;">
+                <input type="text" name="TradeTitle" id="TradeTitle" oninput="if(value.length>15)value=value.slice(0,15)" class="form-control" placeholder="请输入标题" />
+            </div>
+            <div class="col-sm-3 col-xs-3" style="padding: 0 10px 0 20px; margin-top: 5px">展会时间：</div>
+            <div class="col-sm-7 col-xs-8 " style="margin-bottom: 10px;">
+                <input type="date" class="form-control" id="TradeTime" name="TradeTime" />
+            </div>
+            <div class="col-sm-3 col-xs-3" style="padding: 0 10px 0 20px; margin-top: 5px">展会地点：</div>
+            <div class="col-sm-7 col-xs-8 " style="margin-bottom: 10px;">
+                <input type="text" name="TradeAddress" id="TradeAddress" oninput="if(value.length>15)value=value.slice(0,15)" class="form-control" placeholder="请输入展会地点" />
+            </div>
+            <div class="col-sm-3 col-xs-3" style="padding: 0 10px 0 20px; margin-top: 5px">展会简介：</div>
+            <div class="col-sm-7 col-xs-8 " style="margin-bottom: 10px;">
+                <input type="text" name="TradeIntroduction" id="TradeIntroduction" oninput="if(value.length>20)value=value.slice(0,21)" class="form-control" placeholder="请输入展会简介" />
+            </div>
+            <div class="col-sm-3 col-xs-3" style="padding: 0 10px 0 20px; margin-top: 5px">展会内容：</div>
+            <div class="col-sm-7 col-xs-8 " style="margin-bottom: 10px;">
+                <input type="text" name="TradeInfo" id="TradeInfo" class="form-control"  oninput="if(value.length>30)value=value.slice(0,31)" placeholder="请输入展会内容" />
+            </div>
+            <div class="col-sm-3 col-xs-3" style="padding: 0 10px 0 20px; margin-top: 5px">联系人：</div>
+            <div class="col-sm-7 col-xs-8 " style="margin-bottom: 10px;">
+                <input type="text" name="TradeContact" id="TradeContact" class="form-control"  oninput="if(value.length>10)value=value.slice(0,11)" placeholder="请输入联系人" />
+            </div>
+            <div class="col-sm-3 col-xs-3" style="padding: 0 10px 0 20px; margin-top: 5px">传真：</div>
+            <div class="col-sm-7 col-xs-8 " style="margin-bottom: 10px;">
+                <input type="text" name="Fax" id="Fax" class="form-control" oninput="if(value.length>10)value=value.slice(0,11)" placeholder="请输入传真" />
+            </div>
+            <div class="col-sm-3 col-xs-3" style="padding: 0 10px 0 20px; margin-top: 5px">联系电话：</div>
+            <div class="col-sm-7 col-xs-8 " style="margin-bottom: 10px;">
+                <input type="text" name="ContactPhone" id="ContactPhone" class="form-control" placeholder="请输入联系电话" />
+            </div>
+        </div>
+        <div class="modal-footer">
+
+            <button type="button" class="btn btn-default" onclick="Back()">取消</button>
+            <button type="button" class="btn btn-primary" onclick="upload()">保存</button>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,125 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{5EDEE09F-F61F-4405-8C9C-182EC8BC2051}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>InternationalTrade.Service</RootNamespace>
+    <AssemblyName>InternationalTrade.Service</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="EntityFramework">
+      <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer">
+      <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="BaseRepository.cs" />
+    <Compile Include="Interface\IAnnualReview.cs" />
+    <Compile Include="Interface\IEmbassy.cs" />
+    <Compile Include="Interface\IEmbassyCertification.cs" />
+    <Compile Include="Interface\IExamine.cs" />
+    <Compile Include="Interface\IExhibitionApplication.cs" />
+    <Compile Include="Interface\IForeExhibition.cs" />
+    <Compile Include="Interface\IForeExhibitionApplication.cs" />
+    <Compile Include="Interface\IForeExhibitionDetail.cs" />
+    <Compile Include="Interface\IForeMessage.cs" />
+    <Compile Include="Interface\IForeOtherApplication.cs" />
+    <Compile Include="Interface\ILogin.cs" />
+    <Compile Include="Interface\IPersonal.cs" />
+    <Compile Include="Interface\IRegister.cs" />
+    <Compile Include="Interface\ITradeExamine.cs" />
+    <Compile Include="Interface\ITradeInfo.cs" />
+    <Compile Include="Interface\IUserManagerService.cs" />
+    <Compile Include="Interface\IVisaManage.cs" />
+    <Compile Include="Interface\IVisaStatus.cs" />
+    <Compile Include="Method\AnnualReviewMethod.cs" />
+    <Compile Include="Method\EmbassyCertificationMethod.cs" />
+    <Compile Include="Method\EmbassyMethod.cs" />
+    <Compile Include="Method\ExamineMethod.cs" />
+    <Compile Include="Method\ExhibitionApplicationMethod.cs" />
+    <Compile Include="Method\ForeExhibitionApplicationMethod.cs" />
+    <Compile Include="Method\ForeExhibitionDetailMethod.cs" />
+    <Compile Include="Method\ForeExhibitionMethod.cs" />
+    <Compile Include="Method\ForeMessageMethod.cs" />
+    <Compile Include="Method\ForeOtherApplicationMethod.cs" />
+    <Compile Include="Method\LoginMethod.cs" />
+    <Compile Include="Method\PersonalMethod.cs" />
+    <Compile Include="Method\RegisterMethod.cs" />
+    <Compile Include="Method\TradeExamineMethod.cs" />
+    <Compile Include="Method\TradeInfoMethod.cs" />
+    <Compile Include="Method\UserManagerMethod.cs" />
+    <Compile Include="Method\VisaManageMethod.cs" />
+    <Compile Include="Method\VisaStatusMethod.cs" />
+    <Compile Include="Model\AnnualReviewViewPage.cs" />
+    <Compile Include="Model\EmbassyCertificationViewPage.cs" />
+    <Compile Include="Model\EmbassyViewPage.cs" />
+    <Compile Include="Model\ExamineViewPage.cs" />
+    <Compile Include="Model\ExhibitionApplicationViewPage.cs" />
+    <Compile Include="Model\ForeExhibitionApplicationViewPage.cs" />
+    <Compile Include="Model\ForeExhibitionDetailViewPage.cs" />
+    <Compile Include="Model\ForeExhibitionViewPage.cs" />
+    <Compile Include="Model\ForeMessageViewPage.cs" />
+    <Compile Include="Model\ForeOtherApplicationViewPage.cs" />
+    <Compile Include="Model\MessageViewPage.cs" />
+    <Compile Include="Model\PersonalViewPage.cs" />
+    <Compile Include="Model\RegisterViewpage.cs" />
+    <Compile Include="Model\TradeExamineViewPage.cs" />
+    <Compile Include="Model\TradeInfoViewPage.cs" />
+    <Compile Include="Model\UserManagerViewPage.cs" />
+    <Compile Include="Model\VisaManageViewPage.cs" />
+    <Compile Include="Model\VisaStatusViewPage.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\InternationalTrade.Repository\InternationalTrade.Repository.csproj">
+      <Project>{93182e71-ac4b-41f9-b663-d64bc42dc8da}</Project>
+      <Name>InternationalTrade.Repository</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

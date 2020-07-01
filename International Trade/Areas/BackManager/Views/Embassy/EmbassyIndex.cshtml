@@ -1,0 +1,287 @@
+﻿@{
+    ViewBag.Title = "EmbassyIndex";
+    Layout = "~/Areas/BackManager/Views/Shared/Back_Layout.cshtml";
+}
+
+<script>
+
+    var result1;
+    var xa;
+    function IndexAjax() {
+        $.get('@Url.Action("EmbassyIndex1", "Embassy")', $('#form1').serialize(),//url: 获取服务器数据的地址 date:向服务器传递的参数 callback: 回调函数，在服务器响应后，页面更新前执行
+            function (result) {
+                result1 = result;
+                $('#box1_k').empty();
+                $.each(result.aa, function (Index, list) {
+                    var a = ChangeDateFormat(list.EmbassyTime);
+                    if (list.EmbassyType == "3") {
+                        $('#box1_k').append('<tr><td><b>' + list.CompanyName + '</b></td><td>' + a + '</td><td><div style="width: 140px"><p style="padding: 2px 30px; border-radius: 40px; background: #CCCCFF; color: #fff; font-size: 0.9em; text-align: center">文件已批准</p></div></td><td><button type="button" name="Delivery" value="' + list.EmbassyID + '" style="border:0;background:none">送外办</button></td></tr>')
+                    }
+                    if (list.EmbassyType == "1") {
+                        $('#box1_k').append('<tr><td><b>' + list.CompanyName + '</b></td><td>' + a + '</td><td><div style="width: 140px"><p style="padding: 2px 30px; border-radius: 40px; background: #babae2; color: #fff; font-size: 0.9em; text-align: center">送外办</p></div></td><td><button type="button" name="Finish" value="' + list.EmbassyID + '" style="border:0;background:none">使馆认证完成</button></td></tr>')
+                    }
+                    if (list.EmbassyType == "2") {
+                        $('#box1_k').append('<tr><td><b>' + list.CompanyName + '</b></td><td>' + a + '</td><td><div style="width: 140px"><p style="padding: 2px 30px; border-radius: 40px; background: #9999CC; color: #fff; font-size: 0.9em; text-align: center">使馆认证完成</p></div></td><td></td></tr>')
+                    }
+                })
+
+                $($("[name='Delivery']")).bind("click", function () {
+                    DeliveryAjax($(this).val());
+                    IndexAjax();
+                });
+
+                $($("[name='Finish']")).bind("click", function () {
+                    FinishAjax($(this).val());
+                    IndexAjax();
+                });
+
+                $('#fy').empty();
+                if (result1.ItemNum > 0) {
+                    $('#fy').append("当前页：" + result1.pageNumber + ",共" + result1.pageNumx + ",页")
+                    $('#fybtn').show()
+                }
+                if (result1.ItemNum == 0) {
+                    $('#fy').append("暂无数据")
+                    $('#fybtn').hide()
+                }
+            })
+    }
+
+    function Search() {
+
+        $.get('@Url.Action("EmbassyIndex1", "Embassy")', { searchString: $("#searchString").val(), State: $("#State").val(), page: $("#page").val() },//url: 获取服务器数据的地址 date:向服务器传递的参数 callback: 回调函数，在服务器响应后，页面更新前执行
+                function (result) {
+                    result1 = result;
+                    $('#box1_k').empty();
+                    $.each(result.aa, function (Index, list) {
+                        var a = ChangeDateFormat(list.EmbassyTime);
+                        if (list.EmbassyType == "3") {
+                            $('#box1_k').append('<tr><td><b>' + list.CompanyName + '</b></td><td>' + a + '</td><td><div style="width: 140px"><p style="padding: 2px 30px; border-radius: 40px; background: #CCCCFF; color: #fff; font-size: 0.9em; text-align: center">文件已批准</p></div></td><td><button type="button" name="Delivery" value="' + list.EmbassyID + '" style="border:0;background:none">送外办</button></td></tr>')
+                        }
+                        if (list.EmbassyType == "1") {
+                            $('#box1_k').append('<tr><td><b>' + list.CompanyName + '</b></td><td>' + a + '</td><td><div style="width: 140px"><p style="padding: 2px 30px; border-radius: 40px; background: #babae2; color: #fff; font-size: 0.9em; text-align: center">送外办</p></div></td><td><button type="button" name="Finish" value="' + list.EmbassyID + '" style="border:0;background:none">使馆认证完成</button></td></tr>')
+                        }
+                        if (list.EmbassyType == "2") {
+                            $('#box1_k').append('<tr><td><b>' + list.CompanyName + '</b></td><td>' + a + '</td><td><div style="width: 140px"><p style="padding: 2px 30px; border-radius: 40px; background: #9999CC; color: #fff; font-size: 0.9em; text-align: center">使馆认证完成</p></div></td><td></td></tr>')
+                        }
+                    })
+                    $($("[name='Delivery']")).bind("click", function () {
+                        DeliveryAjax($(this).val());
+                        IndexAjax();
+                    });
+
+                    $($("[name='Finish']")).bind("click", function () {
+                        FinishAjax($(this).val());
+                        IndexAjax();
+                    });
+                    $('#fy').empty();
+                    if (result1.ItemNum > 0) {
+                        $('#fy').append("当前页：" + result1.pageNumber + ",共" + result1.pageNumx + ",页")
+                        $('#fybtn').show()
+                    }
+                    if (result1.ItemNum == 0) {
+                        $('#fy').append("暂无数据")
+                        $('#fybtn').hide()
+                    }
+                }
+        )
+    }
+
+    $(function ListDown() {
+
+        $.get('@Url.Action("TypeShow", "Embassy")', {},//url: 获取服务器数据的地址 date:向服务器传递的参数 callback: 回调函数，在服务器响应后，页面更新前执行
+                          function (result) {
+                              $('#CompanyName').empty();
+                              $("#CompanyName").append('<option value="">全部</option>');
+                              $.each(result.aa, function (index, list) {
+                                  $('#CompanyName').append('<option value="' + list.CompanyName + '">' + list.CompanyName + '</option>');
+                              });
+                          })
+        })
+
+    function DeliveryAjax(id) {
+        $.post('@Url.Action("Delivery", "Embassy")', { id: id },
+                   function (result) {
+                       if (result == "送外办完成") {
+                           alert(result);
+                           window.location.href = '../Embassy/EmbassyIndex';
+                       }
+                   }
+
+               )
+    }
+
+    function FinishAjax(id) {
+        $.post('@Url.Action("Finish", "Embassy")', { id: id },
+           function (result) {
+               if (result == "使馆认证完成") {
+                   alert(result);
+                   window.location.href = '../Embassy/EmbassyIndex';
+               }
+           }
+
+       )
+    }
+
+    function Add() {
+        $.post('@Url.Action("Add", "Embassy")', { CompanyName: $("#CompanyName").val() },//url: 获取服务器数据的地址 date:向服务器传递的参数 callback: 回调函数，在服务器响应后，页面更新前执行
+                        function (result) {
+                            if (result == "添加成功！") {
+                                alert(result);
+                                window.location.href = '../Embassy/EmbassyIndex';
+                            }
+                            else {
+                                alert(result);
+                            }
+                        }
+                        )
+    }
+
+
+
+    function ChangeDateFormat(jsondate) {
+        jsondate = jsondate.replace("/Date(", "").replace(")/", "");
+        if (jsondate.indexOf("+") > 0) {
+            jsondate = jsondate.substring(0, jsondate.indexOf("+"));
+        }
+        else if (jsondate.indexOf("-") > 0) {
+            jsondate = jsondate.substring(0, jsondate.indexOf("-"));
+        }
+        var date = new Date(parseInt(jsondate, 10));
+        var month = date.getMonth() + 1 < 10 ? "0" + (date.getMonth() + 1) : date.getMonth() + 1;
+        var currentDate = date.getDate() < 10 ? "0" + date.getDate() : date.getDate();
+        return date.getFullYear() + "-" + month + "-" + currentDate;
+    };
+
+    $(function () {
+        IndexAjax();
+
+        $("#check").click(function () {
+            $('#page').val("1");
+            Search();
+        });
+
+        $("#btnf").click(function () {
+            $('#page').val("1");
+            Search();
+        });
+
+        $("#btns").click(function () {
+            $('#page').val(result1.pageNumber <= 1 ? result1.pageNumber : result1.pageNumber - 1);
+            Search();
+        });
+
+        $("#btnx").click(function () {
+            $('#page').val(result1.pageNumber >= result1.pageNumx ? result1.pageNumber : result1.pageNumber + 1);
+            Search();
+        });
+
+        $("#btne").click(function () {
+            $('#page').val(result1.pageNumx);
+            Search();
+        });
+    });
+
+</script>
+
+<header class="page-header">
+    <div class="container-fluid">
+        <h2 class="no-margin-bottom">使馆认证管理页</h2>
+    </div>
+</header>
+<div style="padding-top: 2.5rem; padding-right: 2.5rem; padding-left: 2.5rem;">
+    <div style="background: #fff">
+        <div class="row" style="line-height: 34px; margin-top: 20px; padding: 25px;">
+            <div class="col-md-1  col-xs-5" style="font-size: 16px; margin-left: 0.5%;">
+                企业名称:
+            </div>
+            <div class="col-md-2  col-xs-5" style="font-size: 16px;">
+                <input type="text" class="form-control" name="searchString" id="searchString">
+            </div>
+            <div class="col-md-2  col-xs-5" style="font-size: 16px; text-align: center; font-size: 16px;">
+                使馆认证状态:
+            </div>
+            <div class="col-md-2  col-xs-5" style="font-size: 16px;">
+
+                <select class="form-control" id="State" name="State">
+                    <option value="4">请选择</option>
+                    <option value="3">文件已批准</option>
+                    <option value="1">送外办</option>
+                    <option value="2">使馆认证完成</option>
+                </select>
+            </div>
+            <div class="col-md-2  col-xs-2">
+                <button type="button" class="btn btn-default" style="background: #796AEE; color: #fff" onclick="Search()">查询</button>
+            </div>
+        </div>
+
+
+        <table class="table table-hover" style="margin-left: 25px; width: 1500px">
+            <thead>
+                <tr>
+                    <th>企业名称</th>
+                    <th>认证时间</th>
+                    <th>使馆认证状态</th>
+                    <th>操作</th>
+                </tr>
+            </thead>
+            <tbody id="box1_k">
+            </tbody>
+        </table>
+
+
+
+        <div class="row" style="text-align: end">
+            <div class="col-md-12  col-xs-12">
+
+                <button type="button" style="background: #796AEE; color: #fff" class="btn btn-default" data-toggle="modal" data-target="#myModalAdd">添加</button>
+            </div>
+
+        </div>
+        <div class="row" style="text-align: center">
+            <div class="col-md-12  col-xs-12">
+                <div id="fy">
+                </div>
+                <div id="fybtn">
+                    <input type="text" id="page" value="1" name="page" hidden="hidden" />
+                    <button type="button" style="border: 0; background: none" id="btnf">首页</button>
+                    <button type="button" style="border: 0; background: none" id="btns">上一页</button>
+                    <button type="button" style="border: 0; background: none" id="btnx">下一页</button>
+                    <button type="button" style="border: 0; background: none" id="btne">尾页</button>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+</div>
+
+<div class="modal fade" id="myModalAdd" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="myModalLabel">企业添加</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+
+            </div>
+            <div class="modal-body">
+                <div class="row" style="margin-bottom: 10px;">
+                    <div class="col-sm-3 col-xs-3" style="padding: 0 10px 0 20px; margin-top: 5px">企业名称：</div>
+                    <div class="col-sm-7 col-xs-8 " style="margin-bottom: 10px;">
+                        @*<input type="text" name="CompanyName" id="CompanyName" class="form-control" placeholder="请输入企业名称" />*@
+                        <div class="form-group">
+                            <select class="form-control" name="CompanyName" id="CompanyName">
+
+                            </select>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                <button type="button" class="btn btn-primary" onclick="Add()">保存</button>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,18 @@
+10.1.72.20      master
+10.1.33.21      slave1
+10.1.44.21      slave2
+10.1.9.28       slave3
+10.1.11.27      client
+ 
+vim /etc/hosts
+
+ssh-copy-id
+
+ssh-keygen
+
+
+10.1.11.3      master
+10.1.33.17      slave1
+10.1.44.12      slave2
+10.1.9.22       slave3
+10.1.11.17      client

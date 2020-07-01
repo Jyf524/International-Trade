@@ -1,0 +1,190 @@
+﻿@{
+    ViewBag.Title = "TradeExamineIndex";
+    Layout = "~/Areas/BackManager/Views/Shared/Back_Layout.cshtml";
+}
+<script src="~/Scripts/jquery-1.7.1.min.js"></script>
+
+<script>
+
+
+    function ChangeDateFormat(jsondate) {
+        jsondate = jsondate.replace("/Date(", "").replace(")/", "");
+        if (jsondate.indexOf("+") > 0) {
+            jsondate = jsondate.substring(0, jsondate.indexOf("+"));
+        }
+        else if (jsondate.indexOf("-") > 0) {
+            jsondate = jsondate.substring(0, jsondate.indexOf("-"));
+        }
+        var date = new Date(parseInt(jsondate, 10));
+        var month = date.getMonth() + 1 < 10 ? "0" + (date.getMonth() + 1) : date.getMonth() + 1;
+        var currentDate = date.getDate() < 10 ? "0" + date.getDate() : date.getDate();
+        return date.getFullYear() + "-" + month + "-" + currentDate;
+    };
+
+    var result1;
+    var xa;
+    function IndexAjax() {
+        $.get('@Url.Action("TradeExamineIndex1", "TradeExamine")', $('#form1').serialize(),//url: 获取服务器数据的地址 date:向服务器传递的参数 callback: 回调函数，在服务器响应后，页面更新前执行
+            function (result) {
+                result1 = result;
+                $('#box1_k').empty();
+                $.each(result.aa, function (Index, list) {
+                    var a = ChangeDateFormat(list.TradeTime);
+                    if (list.TradeState == "1") {
+                        $('#box1_k').append('<tr><td><a href="../TradeExamine/TradeExamineDetail?ID=' + list.TradeID + '"">' + list.TradeTitle + '</a></td><td>' + list.TradeAddress + '</td><td>' + list.TradePeopleNum + '</td><td>' + a + '</td></tr>')
+                    }
+                    if (list.TradeState == "2") {
+                        $('#box1_k').append('<tr><td><a href="../TradeExamine/TradeExamineDetail?ID=' + list.TradeID + '"">' + list.TradeTitle + '</a></td><td>' + list.TradeAddress + '</td><td>' + list.TradePeopleNum + '</td><td>' + a + '</td></tr>')
+                    }
+
+                })
+                $('#fy').empty();
+                if (result1.ItemNum > 0) {
+                    $('#fy').append("当前页：" + result1.pageNumber + ",共" + result1.pageNumx + ",页")
+                    $('#fybtn').show()
+                }
+                if (result1.ItemNum == 0) {
+                    $('#fy').append("暂无数据")
+                    $('#fybtn').hide()
+                }
+            })
+    }
+
+    function Search() {
+
+        $.get('@Url.Action("TradeExamineIndex1", "TradeExamine")', { searchString: $("#TradeName").val(), Year: $("#Year").val(), page: $("#page").val() },//url: 获取服务器数据的地址 date:向服务器传递的参数 callback: 回调函数，在服务器响应后，页面更新前执行
+                function (result) {
+                    
+                    result1 = result;
+                    $('#box1_k').empty();
+                    $.each(result.aa, function (Index, list) {
+                        var a = ChangeDateFormat(list.TradeTime);
+                        if (list.TradeState == "1") {
+                            $('#box1_k').append('<tr><td><a href="../TradeExamine/TradeExamineDetail?ID=' + list.TradeID + '"">' + list.TradeTitle + '</a></td><td>' + list.TradeAddress + '</td><td>' + list.TradePeopleNum + '</td><td>' + a + '</td></tr>')
+                        }
+                        if (list.TradeState == "2") {
+                            $('#box1_k').append('<tr><td><a href="../TradeExamine/TradeExamineDetail?ID=' + list.TradeID + '"">' + list.TradeTitle + '</a></td><td>' + list.TradeAddress + '</td><td>' + list.TradePeopleNum + '</td><td>' + a + '</td></tr>')
+                        }
+                    })
+
+                    $('#fy').empty();
+                    if (result1.ItemNum > 0) {
+                        $('#fy').append("当前页：" + result1.pageNumber + ",共" + result1.pageNumx + ",页")
+                        $('#fybtn').show()
+                    }
+                    if (result1.ItemNum == 0) {
+                        $('#fy').append("暂无数据")
+                        $('#fybtn').hide()
+                    }
+                }
+        )
+    }
+
+
+        function DetailAjax(id) {
+
+            $.post('@Url.Action("Detail", "VisaManage")', { id: id },
+
+                    function (result) {
+                        IndexAjax();
+                        $('#CompanyName1').empty();
+                        $('#CompanyName1').append(result.CompanyName);
+                        $('#VisaState1').empty();
+                        $('#VisaState1').append(result.VisaState);
+                        $('#VisaTime1').empty();
+                        var a = ChangeDateFormat(result.VisaTime);
+                        $('#VisaTime1').append(a);
+
+                    }
+
+                )
+    }
+
+    $(function () {
+        IndexAjax();
+
+        $("#check").click(function () {
+            $('#page').val("1");
+            Search();
+        });
+
+        $("#btnf").click(function () {
+            $('#page').val("1");
+            Search();
+        });
+
+        $("#btns").click(function () {
+            $('#page').val(result1.pageNumber <= 1 ? result1.pageNumber : result1.pageNumber - 1);
+            Search();
+        });
+
+        $("#btnx").click(function () {
+            $('#page').val(result1.pageNumber >= result1.pageNumx ? result1.pageNumber : result1.pageNumber + 1);
+            Search();
+        });
+
+        $("#btne").click(function () {
+            $('#page').val(result1.pageNumx);
+            Search();
+        });
+    });
+
+</script>
+
+<header class="page-header">
+    <div class="container-fluid">
+        <h2 class="no-margin-bottom">商展申请审核管理页</h2>
+    </div>
+</header>
+<div style="padding-top: 2.5rem; padding-right: 2.5rem; padding-left: 2.5rem;">
+    <div style="background: #fff">
+        <div class="row" style="line-height: 34px; margin-top: 20px; padding: 25px;">
+            <div class="col-md-1  col-xs-5" style="font-size: 16px; margin-left: 0.5%;">
+                商展标题:
+            </div>
+            <div class="col-md-2  col-xs-5" style="font-size: 16px;">
+                <input type="text" class="form-control" name="TradeName" id="TradeName">
+            </div>
+            <div class="col-md-1  col-xs-5" style="font-size: 16px;">
+                年份:
+            </div>
+            <div class="col-md-2  col-xs-5" style="font-size: 16px;">
+                <input type="text" class="form-control" name="Year" onkeyup="this.value=this.value.replace(/\D/g,'')" onafterpaste="this.value=this.value.replace(/\D/g,'')" id="Year">
+            </div>
+            <div class="col-md-2  col-xs-2">
+                <button type="button" class="btn btn-default" style="background: #796AEE; color: #fff" onclick="Search()">查询</button>
+            </div>
+        </div>
+
+
+
+
+        <table class="table table-bordered table-hover" style="margin-left: 25px; width: 1500px">
+            <thead>
+                <tr>
+                    <th>商展标题</th>
+                    <th>展会地点</th>
+                    <th>申请人总数</th>
+                    <th>展会时间</th>
+                </tr>
+            </thead>
+            <tbody id="box1_k">
+                
+            </tbody>
+        </table>
+
+        <div class="row" style="text-align: center">
+            <div class="col-md-12  col-xs-12">
+                <div id="fy">
+                </div>
+                <div id="fybtn">
+                    <input type="text" id="page" value="1" name="page" hidden="hidden" />
+                    <button type="button" style="border: 0; background: none" id="btnf">首页</button>
+                    <button type="button" style="border: 0; background: none" id="btns">上一页</button>
+                    <button type="button" style="border: 0; background: none" id="btnx">下一页</button>
+                    <button type="button" style="border: 0; background: none" id="btne">尾页</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

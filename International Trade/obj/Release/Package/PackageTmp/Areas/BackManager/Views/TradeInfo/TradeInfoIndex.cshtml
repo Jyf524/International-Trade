@@ -1,0 +1,239 @@
+﻿@{
+    ViewBag.Title = "TradeInfoIndex";
+    Layout = "~/Areas/BackManager/Views/Shared/Back_Layout.cshtml";
+}
+<script src="~/Content/JYF/tableExport.js"></script>
+<script src="~/Content/JYF/jquery.base64.js"></script>
+<script>
+
+    function ChangeDateFormat(jsondate) {
+        jsondate = jsondate.replace("/Date(", "").replace(")/", "");
+        if (jsondate.indexOf("+") > 0) {
+            jsondate = jsondate.substring(0, jsondate.indexOf("+"));
+        }
+        else if (jsondate.indexOf("-") > 0) {
+            jsondate = jsondate.substring(0, jsondate.indexOf("-"));
+        }
+        var date = new Date(parseInt(jsondate, 10));
+        var month = date.getMonth() + 1 < 10 ? "0" + (date.getMonth() + 1) : date.getMonth() + 1;
+        var currentDate = date.getDate() < 10 ? "0" + date.getDate() : date.getDate();
+        return date.getFullYear() + "-" + month + "-" + currentDate;
+    };
+
+    var result1;
+    var xa;
+    function IndexAjax() {
+        $.get('@Url.Action("TradeInfoIndex1", "TradeInfo")', $('#form1').serialize(),//url: 获取服务器数据的地址 date:向服务器传递的参数 callback: 回调函数，在服务器响应后，页面更新前执行
+            function (result) {
+                result1 = result;
+                $('#box1_k').empty();
+                $.each(result.aa, function (Index, list) {
+                    var a = ChangeDateFormat(list.TradeTime);
+                    $('#box1_k').append('<tr id="' + list.TradeID + '"><td><b>' + list.TradeTitle + '</b></td><td>' + a + '</td><td>' + list.TradeAddress + '</td><td >' + list.TradeContact + '</td><td><button type="button" name="delete" value="' + list.TradeID + '" style="border:0;background:none">删除</button><a href="../TradeInfo/LeaveMessage?ID=' + list.TradeID + '" style="color: #000; text-decoration: none">查看留言</a></td></tr>')
+                })
+
+                $($("[name='delete']")).bind("click", function () {
+                    if (confirm("确定删除该商展？")) {
+                        DeleteAjax($(this).val());
+                        IndexAjax();
+                    }
+                });
+
+                $('#fy').empty();
+                if (result1.ItemNum > 0) {
+                    $('#fy').append("当前页：" + result1.pageNumber + ",共" + result1.pageNumx + ",页")
+                    $('#fybtn').show()
+                }
+                if (result1.ItemNum == 0) {
+                    $('#fy').append("暂无数据")
+                    $('#fybtn').hide()
+                }
+            })
+    }
+
+    function Search() {
+
+        $.get('@Url.Action("TradeInfoIndex1", "TradeInfo")', { searchString: $("#searchString").val(), Date: $("#Date").val(), Place: $("#Place").val(), page: $("#page").val() },//url: 获取服务器数据的地址 date:向服务器传递的参数 callback: 回调函数，在服务器响应后，页面更新前执行
+                function (result) {
+                    result1 = result;
+                    $('#box1_k').empty();
+                    $.each(result.aa, function (Index, list) {
+                        var a = ChangeDateFormat(list.TradeTime);
+                        $('#box1_k').append('<tr id="' + list.TradeID + '"><td><b>' + list.TradeTitle + '</b></td><td>' + a + '</td><td>' + list.TradeAddress + '</td><td >' + list.TradeContact + '</td><td><button type="button" name="delete" value="' + list.TradeID + '" style="border:0;background:none">删除</button><a href="../TradeInfo/LeaveMessage?ID=' + list.TradeID + '" style="color: #000; text-decoration: none">查看留言</a></td></tr>')
+                    })
+
+                    $($("[name='delete']")).bind("click", function () {
+                        if (confirm("确定删除该商展？")) {
+                            DeleteAjax($(this).val());
+                            IndexAjax();
+                        }
+                    });
+
+                    $('#fy').empty();
+                    if (result1.ItemNum > 0) {
+                        $('#fy').append("当前页：" + result1.pageNumber + ",共" + result1.pageNumx + ",页")
+                        $('#fybtn').show()
+                    }
+                    if (result1.ItemNum == 0) {
+                        $('#fy').append("暂无数据")
+                        $('#fybtn').hide()
+                    }
+                }
+        )
+    }
+
+    function Add() {
+        window.location.href = '../TradeInfo/TradeInfoAdd';
+    }
+
+    function DetailAjax(id) {
+        window.location.href = '../TradeInfo/TradeInfoDetail?id='+id+'';
+    }
+
+    function DeleteAjax(id) {
+        $.post('@Url.Action("Delete", "TradeInfo")', { id: id },
+                     function (result) {
+                         if (result == "删除成功") {
+                             alert(result);
+                             window.location.href = '../TradeInfo/TradeInfoIndex';
+                         }
+                         else {
+                             alert(result);
+                         }
+                     }
+
+                 )
+    }
+
+    
+
+    $(function () {
+        $('#box1_k').on("click", "tr", function () {
+            $(this).parent().find("tr.focus").toggleClass("focus");
+            $(this).toggleClass("focus");
+            xa = $(this).attr("id");
+        })
+
+
+        $("#Detail").click(function () {
+            if (xa == undefined || xa == "" || xa == null) {
+                alert("请选中一行");
+                return false;
+            }
+            DetailAjax(xa);
+        });
+
+
+    })
+
+    
+
+
+
+    $(function () {
+        IndexAjax();
+
+        $("#check").click(function () {
+            $('#page').val("1");
+            Search();
+        });
+
+        $("#btnf").click(function () {
+            $('#page').val("1");
+            Search();
+        });
+
+        $("#btns").click(function () {
+            $('#page').val(result1.pageNumber <= 1 ? result1.pageNumber : result1.pageNumber - 1);
+            Search();
+        });
+
+        $("#btnx").click(function () {
+            $('#page').val(result1.pageNumber >= result1.pageNumx ? result1.pageNumber : result1.pageNumber + 1);
+            Search();
+        });
+
+        $("#btne").click(function () {
+            $('#page').val(result1.pageNumx);
+            Search();
+        });
+    });
+
+
+</script>
+
+<header class="page-header">
+    <div class="container-fluid">
+        <h2 class="no-margin-bottom">商展信息管理页</h2>
+    </div>
+</header>
+<div style="padding-top: 2.5rem; padding-right: 2.5rem; padding-left: 2.5rem;">
+    <div style="background: #fff">
+        <div class="row" style="line-height: 34px; margin-top: 20px; padding: 25px;">
+            <div class="col-md-1  col-xs-5" style="font-size: 16px; margin-left: 0.5%;">
+                商展标题:
+            </div>
+            <div class="col-md-2  col-xs-5" style="font-size: 16px;">
+                <input type="text" class="form-control" name="searchString" id="searchString">
+            </div>
+            <div class="col-md-1  col-xs-5" style="font-size: 16px;">
+                展会时间:
+            </div>
+            <div class="col-md-2  col-xs-5" style="font-size: 16px;">
+                <input type="date" class="form-control" id="Date" name="Date" />
+            </div>
+            <div class="col-md-1  col-xs-5" style="font-size: 16px;">
+                展会地点:
+            </div>
+            <div class="col-md-2  col-xs-5" style="font-size: 16px;">
+                <input type="text" class="form-control" name="Place" id="Place">
+            </div>
+            <div class="col-md-2  col-xs-2">
+                <button type="button" class="btn btn-default" style="background: #796AEE; color: #fff" onclick="Search()">查询</button>
+            </div>
+        </div>
+
+
+        <table id="div_DataList" class="table  table-hover datatable" style="margin-left: 25px; width: 1500px">
+            <thead>
+                <tr>
+                    <th>标题</th>
+                    <th>展会时间</th>
+                    <th>展会地点</th>
+                    <th>联系人</th>
+                    <th>操作</th>
+                </tr>
+            </thead>
+            <tbody id="box1_k">
+            </tbody>
+        </table>
+
+
+
+        <div class="row" style="text-align: end">
+            <div class="col-md-12  col-xs-12">
+
+                <button type="button" style="background: #796AEE; color: #fff" class="btn btn-default" onclick="Add()">添加</button>
+                <button type="button" style="background: #796AEE; color: #fff" class="btn btn-default"  id="Detail">查看详细</button>
+                <a  class="btn btn-default" style="background: #796AEE; color: #fff" href="@Url.Action("daochu", "TradeInfo")">导出商展信息</a>
+
+            </div>
+
+        </div>
+        <div class="row" style="text-align: center">
+            <div class="col-md-12  col-xs-12">
+                <div id="fy">
+                </div>
+                <div id="fybtn">
+                    <input type="text" id="page" value="1" name="page" hidden="hidden" />
+                    <button type="button" style="border: 0; background: none" id="btnf">首页</button>
+                    <button type="button" style="border: 0; background: none" id="btns">上一页</button>
+                    <button type="button" style="border: 0; background: none" id="btnx">下一页</button>
+                    <button type="button" style="border: 0; background: none" id="btne">尾页</button>
+                </div>
+            </div>
+        </div>
+
+
+
+      

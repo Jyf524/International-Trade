@@ -1,0 +1,439 @@
+﻿@{
+    ViewBag.Title = "PersonalIndex";
+    Layout = "~/Views/Shared/ForeLayout.cshtml";
+}
+@*<script src="~/Content/JYF/jquery-1.9.0.min.js"></script>*@<script src="~/Content/JYF/jquery-1.12.1.min.js"></script>
+<script src="~/Content/JYF/alert.js"></script>
+<link href="~/Content/JYF/alert.css" rel="stylesheet" />
+<script src="~/Content/JYF/imgbox-1.0.3.js"></script>
+<link href="~/Content/JYF/imgbox.css" rel="stylesheet" />
+<script>
+
+    var M = {
+
+    }
+@*    $(function () {
+        $.post(
+            '@Url.Action("xxx", "Personal")', $('#form1').serialize(),
+            function (result) {
+                if (result == "1") {
+                    return;
+                }
+
+                if (result == "2") {
+                    if (M.dialog2) {
+                        return M.dialog2.show();
+                    }
+                    M.dialog2 = jqueryAlert({
+                        'width': '200px',
+                        'height': '100px',
+                        'content': '请先登录企业账号!',
+                        'modal': true,
+                        'buttons': {
+                            '确定': function () {
+                                M.dialog2.close();
+                                window.location.href = '../../ForeExhibition/Login';
+                            }
+                        }
+                    })
+                    return;
+                }
+            });
+    });*@
+
+    function outline() {
+        $.post(
+          '@Url.Action("yyy", "Personal")', $('#form1').serialize(),
+            function (result) {
+                if (result == "1") {
+                    if (M.dialog2) {
+                        return M.dialog2.show();
+                    }
+                    M.dialog2 = jqueryAlert({
+                        'width': '200px',
+                        'height': '100px',
+                        'content': '注销成功!',
+                        'modal': true,
+                        'buttons': {
+                            '确定': function () {
+                                M.dialog2.close();
+                                window.location.href = '../../ForeExhibition/Login';
+                            }
+                        }
+                    })
+                    //alert("注销成功！");
+                    
+                    return;
+                }
+            });
+    }
+
+    $(function IndexAjax(id) {
+        $.get('@Url.Action("PersonalIndex1", "Personal")', $('#form1').serialize(),//url: 获取服务器数据的地址 date:向服务器传递的参数 callback: 回调函数，在服务器响应后，页面更新前执行
+            function (result) {
+                var a = result.aa[0];
+                if (a != undefined) {
+                    $('#box1_k').empty();
+                    $('#box1_k').append('<div style="margin-bottom: 20px"><div class="pet_grzx_ico" style="float: left"><img id="demo-4" src=' + a.UserImg + ' style="width: 80px; border-radius: 10px;"></div><div class="pet_grzx_name">' + a.UserName + '</div><div class="pet_grzx_id">ID:' + a.UserID + '</div></div>')
+                    ImgBox.imgbox('#demo-4');
+                }
+            })
+    })
+
+    $(function PersonalInfo() {
+        $.post('@Url.Action("PersonalInfo1", "Personal")', {},
+                    function (result) {
+                        var a = result.aa[0];
+                        if (a != undefined) {
+                            $('#box2_k').empty();
+                            $('#box2_k').append('<a href="../Personal/PersonalInfo?ID=' + a.UserID + '"><div class="col-xs-1 col-sm-1" style="line-height: 60px;"><span class="glyphicon glyphicon-user" aria-hidden="true" style="margin-left: 10px"></span></div><div class="col-xs-5 col-sm-5" style="line-height: 60px;"><strong><i style="font-style: normal; margin-left: 10px">个人信息</i></strong></div><div class="col-xs-5 col-sm-5" style="line-height: 60px;"></div><div class="col-xs-1 col-sm-1" style="line-height: 60px; color: #dedede"><span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span></div></a>')
+                        }
+                    })
+
+    })
+
+
+    $(function EmbassyCertificationIndex() {
+        $.post('@Url.Action("PersonalInfo1", "Personal")', {},
+                    function (result) {
+                        var a = result.aa[0];
+                        if (a != undefined) {
+                            $('#box3_k').empty();
+                            $('#box3_k').append('<a href="../Personal/EmbassyCertificationIndex?ID=' + a.CompanyName + '"><div class="col-xs-1 col-sm-1" style="line-height: 60px;"><span class="glyphicon glyphicon-queen" aria-hidden="true" style="margin-left: 10px"></span></div><div class="col-xs-5 col-sm-5" style="line-height: 60px;"><strong><i style="font-style: normal; margin-left: 10px">使馆认证</i></strong></div><div class="col-xs-5 col-sm-5" style="line-height: 60px;"></div><div class="col-xs-1 col-sm-1" style="line-height: 60px; color: #dedede"><span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span></div></a>')
+                        }
+                    })
+    })
+
+    $(function Visa() {
+        $.post('@Url.Action("PersonalInfo1", "Personal")', {},
+                    function (result) {
+                        var a = result.aa[0];
+                        if (a != undefined) {
+                            $('#box4_k').empty();
+                            $('#box4_k').append('<a href="../Personal/VisaStatus?ID=' + a.CompanyName + '"><div class="col-xs-1 col-sm-1" style="line-height: 60px;"><span class="glyphicon glyphicon-plane" aria-hidden="true" style="margin-left: 10px"></span></div><div class="col-xs-5 col-sm-5" style="line-height: 60px;"><strong><i style="font-style: normal; margin-left: 10px">签证状态</i></strong></div><div class="col-xs-5 col-sm-5" style="line-height: 60px;"></div><div class="col-xs-1 col-sm-1" style="line-height: 60px; color: #dedede"><span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span></div></a>')
+                        }
+                    })
+    })
+
+    $(function AnnualReview() {
+        $.post('@Url.Action("PersonalInfo1", "Personal")', {},
+                    function (result) {
+                        var a = result.aa[0];
+                        if (a != undefined) {
+                            $('#box5_k').empty();
+                            $('#box5_k').append('<a href="../Personal/AnnualReview?ID=' + a.CompanyName + '"><div class="col-xs-1 col-sm-1" style="line-height: 60px;"><span class="glyphicon glyphicon-ok-sign" aria-hidden="true" style="margin-left: 10px"></span></div><div class="col-xs-5 col-sm-5" style="line-height: 60px;"><strong><i style="font-style: normal; margin-left: 10px">年审材料</i></strong></div><div class="col-xs-5 col-sm-5" style="line-height: 60px;"></div><div class="col-xs-1 col-sm-1" style="line-height: 60px; color: #dedede"><span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span></div></a>')
+                        }
+                    })
+    })
+
+    $(function ExhibitionApplication() {
+        $.post('@Url.Action("PersonalInfo1", "Personal")', {},
+                        function (result) {
+                            var a = result.aa[0];
+                            if (a != undefined) {
+                                $('#box6_k').empty();
+                                $('#box6_k').append(' <a href="../Personal/ExhibitionApplication?ID=' + a.UserID + '"><div class="col-xs-1 col-sm-1" style="line-height: 60px;"><span class="glyphicon glyphicon-th-list" aria-hidden="true" style="margin-left: 10px"></span></div><div class="col-xs-5 col-sm-5" style="line-height: 60px;"><strong><i style="font-style: normal; margin-left: 10px">展位申请</i></strong></div><div class="col-xs-5 col-sm-5" style="line-height: 60px;"></div><div class="col-xs-1 col-sm-1" style="line-height: 60px; color: #dedede"><span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span></div></a>')
+                            }
+                        })
+    })
+
+    $(function PersonalPassWordChange() {
+        $.post('@Url.Action("PersonalInfo1", "Personal")', {},
+                     function (result) {
+                         var a = result.aa[0];
+                         if (a != undefined) {
+                             $('#box7_k').empty();
+                             $('#box7_k').append(' <a href="../Personal/PersonalPassWordChange?ID=' + a.UserID + '"><div class="col-xs-1 col-sm-1" style="line-height: 60px;"><span class="glyphicon glyphicon-lock" aria-hidden="true" style="margin-left: 10px"></span></div><div class="col-xs-5 col-sm-5" style="line-height: 60px;"><strong><i style="font-style: normal; margin-left: 10px">修改密码</i></strong></div><div class="col-xs-5 col-sm-5" style="line-height: 60px;"></div><div class="col-xs-1 col-sm-1" style="line-height: 60px; color: #dedede"><span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span></div></a>')
+                         }
+                     })
+
+        $(function Outline() {
+            $.post('@Url.Action("PersonalInfo1", "Personal")', {},
+                        function (result) {
+                            var a = result.aa[0];
+                            if (a != undefined) {
+                                $('#boxoutline_k').empty();
+                                $('#boxoutline_k').append(' <div class="col-xs-12 col-md-12" style="margin-top: 20px; padding: 0px;"><button type="button" class="btn_sure btn_PhoneOperation" onclick="outline()">注 销</button></div>')
+                            }
+                        })
+        })
+    })
+
+    
+    
+    
+    
+</script>
+
+
+
+<div class="pet_grzx_nr">
+    <div id="box1_k">
+        <div style="margin-bottom: 20px">
+            <div class="pet_grzx_ico" style="float: left">
+                <img  src="../Content/img/outlineimg.jpg" style="width: 80px; border-radius: 10px;">
+            </div>
+            <a href="../../ForeExhibition/Login" style="text-decoration: none">
+                <div class="pet_grzx_name">点击登录</div>
+            </a>
+            <div class="pet_grzx_id">请登录账号</div>
+        </div>
+    </div>
+
+
+    <div class="container-fluid">
+
+        <div class="row" style="height: 16px; background: #F4F5F6">
+        </div>
+
+    </div>
+
+    <div class="container-fluid">
+
+        <div class="row" style="height: 60px; background: #ffffff">
+            <div id="box2_k">
+                <div class="col-xs-1 col-sm-1" style="line-height: 60px;"><span class="glyphicon glyphicon-user" aria-hidden="true" style="margin-left: 10px"></span></div>
+                <div class="col-xs-5 col-sm-5" style="line-height: 60px;"><strong><i style="font-style: normal; margin-left: 10px">个人信息</i></strong></div>
+                <div class="col-xs-5 col-sm-5" style="line-height: 60px;"></div>
+                <div class="col-xs-1 col-sm-1" style="line-height: 60px; color: #dedede"><span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span></div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="container-fluid">
+
+        <div class="row" style="height: 16px; background: #F4F5F6">
+        </div>
+
+    </div>
+
+
+    <div class="container-fluid">
+
+        <div class="row" style="height: 60px; background: #ffffff">
+            <div id="box3_k">
+                <div class="col-xs-1 col-sm-1" style="line-height: 60px;"><span class="glyphicon glyphicon-queen" aria-hidden="true" style="margin-left: 10px"></span></div>
+                <div class="col-xs-5 col-sm-5" style="line-height: 60px;"><strong><i style="font-style: normal; margin-left: 10px">使馆认证</i></strong></div>
+                <div class="col-xs-5 col-sm-5" style="line-height: 60px;"></div>
+                <div class="col-xs-1 col-sm-1" style="line-height: 60px; color: #dedede"><span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span></div>
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <div class="container-fluid">
+
+        <div class="row" style="height: 60px; background: #ffffff; border-top: solid 1px #F4F5F6">
+            <div id="box4_k">
+                <div class="col-xs-1 col-sm-1" style="line-height: 60px;">
+                    <span class="glyphicon glyphicon-plane" aria-hidden="true" style="margin-left: 10px"></span>
+                </div>
+
+                <div class="col-xs-5 col-sm-5" style="line-height: 60px;">
+                    <strong><i style="font-style: normal; margin-left: 10px">签证状态</i></strong>
+                </div>
+
+                <div class="col-xs-5 col-sm-5" style="line-height: 60px;">
+                </div>
+
+                <div class="col-xs-1 col-sm-1" style="line-height: 60px; color: #dedede">
+                    <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="container-fluid">
+        <div class="row" style="height: 60px; background: #ffffff; border-top: solid 1px #F4F5F6">
+            <div id="box5_k">
+                <div class="col-xs-1 col-sm-1" style="line-height: 60px;">
+                    <span class="glyphicon glyphicon-ok-sign" aria-hidden="true" style="margin-left: 10px"></span>
+                </div>
+
+                <div class="col-xs-5 col-sm-5" style="line-height: 60px;">
+                    <strong><i style="font-style: normal; margin-left: 10px">年审材料</i></strong>
+                </div>
+
+                <div class="col-xs-5 col-sm-5" style="line-height: 60px;">
+                </div>
+
+                <div class="col-xs-1 col-sm-1" style="line-height: 60px; color: #dedede">
+                    <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="container-fluid">
+        <div class="row" style="height: 60px; background: #ffffff; border-top: solid 1px #F4F5F6">
+            <div id="box6_k">
+                <div class="col-xs-1 col-sm-1" style="line-height: 60px;">
+                    <span class="glyphicon glyphicon-th-list" aria-hidden="true" style="margin-left: 10px"></span>
+                </div>
+
+                <div class="col-xs-5 col-sm-5" style="line-height: 60px;">
+                    <strong><i style="font-style: normal; margin-left: 10px">展位申请</i></strong>
+                </div>
+
+                <div class="col-xs-5 col-sm-5" style="line-height: 60px;">
+                </div>
+
+                <div class="col-xs-1 col-sm-1" style="line-height: 60px; color: #dedede">
+                    <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="container-fluid">
+
+        <div class="row" style="height: 16px; background: #F4F5F6">
+        </div>
+
+    </div>
+
+    <div class="container-fluid">
+
+        <div class="row" style="height: 60px; background: #ffffff; border-top: solid 1px #F4F5F6">
+            <div id="box7_k">
+                <div class="col-xs-1 col-sm-1" style="line-height: 60px;"><span class="glyphicon glyphicon-lock" aria-hidden="true" style="margin-left: 10px"></span></div>
+                <div class="col-xs-5 col-sm-5" style="line-height: 60px;"><strong><i style="font-style: normal; margin-left: 10px">修改密码</i></strong></div>
+                <div class="col-xs-5 col-sm-5" style="line-height: 60px;"></div>
+                <div class="col-xs-1 col-sm-1" style="line-height: 60px; color: #dedede"><span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span></div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="container-fluid">
+
+        <div class="row" style="height: 16px; background: #F4F5F6">
+        </div>
+
+    </div>
+
+
+    <div id="boxoutline_k">
+        <div class="col-xs-12 col-md-12" style="margin-top: 20px; padding: 0px;">
+            <button type="button" class="btn_sure btn_PhoneOperation">注 销</button>
+        </div>
+    </div>
+
+</div>
+
+
+@*<div class="container-fluid">
+    <div class="row xs" style="height: 50px">
+        <div class="bs-example bs-navbar-top-example" data-example-id="navbar-static-top">
+            <nav class="navbar navbar-default navbar-static-top">
+                <!-- We use the fluid option here to avoid overriding the fixed width of a normal container within the narrow content columns. -->
+                <div class="container-fluid">
+                    <div class="navbar-header">
+                        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-8" aria-expanded="false">
+                            <span class="sr-only">Toggle navigation</span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                        </button>
+                        <a class="navbar-brand" href="#"><span style="margin-left: 0px;"></span></a>
+                    </div>
+
+                    <!-- Collect the nav links, forms, and other content for toggling -->
+                    <div class="navbar-collapse collapse" id="bs-example-navbar-collapse-8" aria-expanded="false" style="height: 1px;">
+                        <ul class="nav navbar-nav visible-xs-block visible-sm-block">
+                            <li><a href="../ForeExhibition/Login" style="text-align: center; text-decoration: none"><span style="margin-left: 5px;">登录</span></a>
+                            <li><a href="../ForeExhibition/Register" style="text-align: center; text-decoration: none"><span style="margin-left: 5px;">注册</span></a>
+                        </ul>
+                    </div>
+                    <!-- /.navbar-collapse -->
+                </div>
+            </nav>
+        </div>
+    </div>
+</div>*@
+
+
+<style>
+    .btn_PhoneOperation {
+        border: 0px;
+        text-shadow: none;
+        background: 0px;
+        font-weight: 500;
+        padding-left: 0px;
+        -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+        outline: none;
+        height: 34px;
+        padding: 6px 12px;
+        font-size: 14px;
+        width: 100%;
+        color: #999;
+    }
+
+    .btn_sure {
+        text-shadow: none;
+        background-color: #e64a4a;
+        color: #fff;
+        display: block;
+        width: 98%;
+        height: 3rem;
+        font-size: 1.6rem;
+        margin: 0 auto;
+        text-align: center;
+        border-radius: 2rem;
+        margin-bottom: 1rem;
+    }
+
+    .pet_grzx {
+        width: 100%;
+        background: #fff;
+        height: 100px;
+        padding-top: 20px;
+    }
+
+    .pet_grzx_nr {
+        width: 100%;
+        height: 81%;
+        /*padding: 20px 20px 0;*/
+        overflow: hidden;
+    }
+
+    .pet_grzx_ico {
+        /*margin: 0 auto;*/
+        padding: 1.5rem;
+        width: 100px;
+        height: 100px;
+        /*border-radius: 50%;*/
+        overflow: hidden;
+    }
+
+        .pet_grzx_ico img {
+            width: 100%;
+        }
+
+    .pet_grzx_name {
+        /*width: 100%;*/
+        font-size: 26px;
+        padding: 15px 0 0;
+        /*text-align: center;*/
+        color: #000;
+        margin-left: 110px;
+    }
+
+    .pet_grzx_id {
+        font-size: 14px;
+        width: 100%;
+        /*text-align: center;*/
+        color: #a1a1a1;
+        margin-top: 16px;
+        margin-left: 110px;
+    }
+</style>

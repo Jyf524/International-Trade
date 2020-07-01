@@ -1,0 +1,416 @@
+﻿@{
+    ViewBag.Title = "UserManagerIndex";
+    Layout = "~/Areas/BackManager/Views/Shared/Back_Layout.cshtml";
+}
+
+
+<script>
+
+    var result1;
+    var xa;
+    function IndexAjax() {
+        $.get('@Url.Action("UserManagerIndex1", "UserManager")', { searchString: $("#searchString").val(), Role: $("#UserRole").val(), page: $("#page").val() },//url: 获取服务器数据的地址 date:向服务器传递的参数 callback: 回调函数，在服务器响应后，页面更新前执行
+            function (result) {
+                result1 = result;
+                $('#box1_k').empty();
+                $.each(result.aa, function (Index, list) {
+                    $('#box1_k').append('<tr id="' + list.UserID + '"><td><b>' + list.UserName + '</b></td><td><b>' + list.UserPermission + '</b></td><td>' + list.ContactType + '</td><td>' + list.ContactAddress + '</td><td>' + list.Email + '</td><td>' + list.UserPermission + '</td></tr>')
+                    //<td><button type="button" name="delete" value="' + list.UserID + '" style="border:0;background:none">删除</button></td>
+                })
+
+                $($("[name='delete']")).bind("click", function () {
+                    if (confirm("确定删除该用户？")) {
+                        DeleteAjax($(this).val());
+                        IndexAjax();
+                    }
+                });
+
+                $('#fy').empty();
+                if (result1.ItemNum > 0) {
+                    $('#fy').append("当前页：" + result1.pageNumber + ",共" + result1.pageNumx + ",页")
+                    $('#fybtn').show()
+                }
+                if (result1.ItemNum == 0) {
+                    $('#fy').append("暂无数据")
+                    $('#fybtn').hide()
+                }
+            })
+    }
+
+    function Search() {
+
+        $.get('@Url.Action("UserManagerIndex1", "UserManager")', { searchString: $("#searchString").val(), Role: $("#UserRole").val(), page: $("#page").val() },//url: 获取服务器数据的地址 date:向服务器传递的参数 callback: 回调函数，在服务器响应后，页面更新前执行
+                function (result) {
+                    result1 = result;
+                    $('#box1_k').empty();
+                    $.each(result.aa, function (Index, list) {
+                        $('#box1_k').append('<tr id="' + list.UserID + '"><td><b>' + list.UserName + '</b></td><td><b>' + list.UserPermission + '</b></td><td>' + list.ContactType + '</td><td>' + list.ContactAddress + '</td><td>' + list.Email + '</td><td>' + list.UserPermission + '</td><td><button type="button" name="delete" value="' + list.UserID + '" style="border:0;background:none">删除</button></td></tr>')
+                    })
+
+                    $($("[name='delete']")).bind("click", function () {
+                        if (confirm("确定删除该书籍？")) {
+                            DeleteAjax($(this).val());
+                            IndexAjax();
+                        }
+                    });
+
+                    $('#fy').empty();
+                    if (result1.ItemNum > 0) {
+                        $('#fy').append("当前页：" + result1.pageNumber + ",共" + result1.pageNumx + ",页")
+                        $('#fybtn').show()
+                    }
+                    if (result1.ItemNum == 0) {
+                        $('#fy').append("暂无数据")
+                        $('#fybtn').hide()
+                    }
+                }
+        )
+    }
+
+    function Add() {
+        $.post('@Url.Action("Add", "UserManager")', { UserName: $("#UserName").val(), UserPassword: $("#PassWord").val(), ContactType: $("#ContactType").val(), Email: $("#Email").val(), Role: $("#role").val(), ContactAddress: $("#ContactAddress").val() },//url: 获取服务器数据的地址 date:向服务器传递的参数 callback: 回调函数，在服务器响应后，页面更新前执行
+                        function (result) {
+                            if (result == "添加成功！") {
+                                alert(result);
+                                window.location.href = '../UserManager/UserManagerIndex';
+                            }
+                            else {
+                                alert(result);
+                            }
+                        }
+                        )
+    }
+
+    function DeleteAjax(id) {
+        $.post('@Url.Action("Delete", "UserManager")', { id: id },
+                     function (result) {
+                         if (result == "删除成功") {
+                             alert(result);
+                             window.location.href = '../UserManager/UserManagerIndex';
+                         }
+                         else {
+                             alert(result);
+                         }
+                     }
+
+                 )
+    }
+
+    function DetailAjax(id) {
+
+        $.post('@Url.Action("Detail", "UserManager")', { id: id },
+
+                    function (result) {
+                        IndexAjax();
+                        $('#UserName1').val(result.UserName);
+                        $('#PassWord1').val(result.UserPassword);
+                        $('#ContactType1').val(result.ContactType);
+                        $('#ContactAddress1').val(result.ContactAddress);
+                        $('#Email1').val(result.Email);
+
+                        if (result.UserRole == "4") {
+                            $("#choice").hide();
+                            $("#choice1").hide();
+                            $("#qyyh").show();
+                        }
+                        if (result.UserRole == "2") {
+                            $("#crzc1").attr('checked', 'checked')
+                            $("#choice").show();
+                            $("#choice1").show();
+                            $("#qyyh").hide();
+
+                        }
+                        if (result.UserRole == "3") {
+                            $("#gjzlb1").attr('checked', 'checked')
+                            $("#choice").show();
+                            $("#choice1").show();
+                            $("#qyyh").hide();
+                        }
+                    }
+
+                )
+    }
+
+    function Save() {
+        SaveAjax(xa);
+        IndexAjax();
+    }
+
+    function SaveAjax(id) {
+        $.post('@Url.Action("UserDetailSave", "UserManager")', { UserName: $("#UserName1").val(), UserPassword: $("#PassWord1").val(), ContactType: $("#ContactType1").val(), Email: $("#Email1").val(), Role: $("#role").val(), ContactAddress: $("#ContactAddress1").val(), id: id },
+                          function (result) {
+                              if (result == "修改成功！") {
+                                  alert(result);
+                                  IndexAjax();
+                                  window.location.href = '../UserManager/UserManagerIndex';
+                              }
+                              else {
+                                  alert(result);
+                              }
+
+                          }
+
+                      )
+    }
+
+    $(function () {
+        $('#box1_k').on("click", "tr", function () {
+            $(this).parent().find("tr.focus").toggleClass("focus");
+            $(this).toggleClass("focus");
+            xa = $(this).attr("id");
+        })
+
+
+        $("#Detail").click(function () {
+            if (xa == undefined || xa == "" || xa == null) {
+                alert("请选中一行");
+                return false;
+            }
+            DetailAjax(xa);
+        });
+    })
+
+
+
+    function a() {
+        if (crzc.checked == true) {
+            $('#role').val("2");
+        }
+        if (gjzlb.checked == true) {
+            $('#role').val("3");
+        }
+        if (crzc1.checked == true) {
+            $('#role').val("2");
+        }
+        if (gjzlb1.checked == true) {
+            $('#role').val("3");
+        }
+    };
+
+    $(function () {
+        IndexAjax();
+
+        $(function () {
+            if (crzc.checked == true) {
+                $('#role').val("2");
+            }
+            if (gjzlb.checked == true) {
+                $('#role').val("3");
+            }
+            if (crzc1.checked == true) {
+                $('#role').val("2");
+            }
+            if (gjzlb1.checked == true) {
+                $('#role').val("3");
+            }
+        });
+
+        $("#check").click(function () {
+            $('#page').val("1");
+            Search();
+        });
+
+        $("#btnf").click(function () {
+            $('#page').val("1");
+            Search();
+        });
+
+        $("#btns").click(function () {
+            $('#page').val(result1.pageNumber <= 1 ? result1.pageNumber : result1.pageNumber - 1);
+            Search();
+        });
+
+        $("#btnx").click(function () {
+            $('#page').val(result1.pageNumber >= result1.pageNumx ? result1.pageNumber : result1.pageNumber + 1);
+            Search();
+        });
+
+        $("#btne").click(function () {
+            $('#page').val(result1.pageNumx);
+            Search();
+        });
+    });
+
+</script>
+
+<header class="page-header">
+    <div class="container-fluid">
+        <h2 class="no-margin-bottom">用户管理</h2>
+    </div>
+</header>
+
+<div style="padding-top: 2.5rem; padding-right: 2.5rem; padding-left: 2.5rem;">
+    <div style="background: #fff">
+        <div class="row" style="line-height: 34px; margin-top: 20px; padding: 25px;">
+            <div class="col-md-1  col-xs-5" style="font-size: 16px; margin-left: 0.5%;">
+                用户名:
+            </div>
+            <div class="col-md-2  col-xs-5" style="font-size: 16px;">
+                <input type="text" class="form-control" name="searchString" id="searchString">
+            </div>
+            <div class="col-md-1  col-xs-5" style="font-size: 16px;">
+                用户角色:
+            </div>
+            <div class="col-md-2  col-xs-5" style="font-size: 16px;">
+                <select class="form-control" id="UserRole" name="UserRole">
+                    <option value="5">请选择</option>
+                    <option value="4">企业用户</option>
+                    <option value="3">国际展览部管理员</option>
+                    <option value="2">出认证处管理员</option>
+                </select>
+            </div>
+            <div class="col-md-2  col-xs-2">
+                <button type="button" class="btn btn-default" style="background: #796AEE; color: #fff" onclick="Search()">查询</button>
+            </div>
+        </div>
+
+
+        <table class="table  table-hover" style="margin-left: 25px; width: 1500px">
+            <thead>
+                <tr>
+                    <th>用户名</th>
+                    <th>用户角色</th>
+                    <th>联系方式</th>
+                    <th>联系地址</th>
+                    <th>邮箱</th>
+                    <th>用户权限</th>
+                    @*                   <th>操作</th>*@
+                </tr>
+            </thead>
+            <tbody id="box1_k">
+            </tbody>
+        </table>
+
+
+        <div class="row" style="text-align: end">
+            <div class="col-md-12  col-xs-12">
+
+                <button type="button" style="background: #796AEE; color: #fff" class="btn btn-default" data-toggle="modal" data-target="#myModalAdd">添加</button>
+                <button type="button" style="background: #796AEE; color: #fff" class="btn btn-default" data-toggle="modal" data-target="#myModalDetail" id="Detail">查看详细</button>
+
+            </div>
+
+        </div>
+        <div class="row" style="text-align: center">
+            <div class="col-md-12  col-xs-12">
+                <div id="fy">
+                </div>
+                <div id="fybtn">
+                    <input type="text" id="page" value="1" name="page" hidden="hidden" />
+                    <button type="button" style="border: 0; background: none" id="btnf">首页</button>
+                    <button type="button" style="border: 0; background: none" id="btns">上一页</button>
+                    <button type="button" style="border: 0; background: none" id="btnx">下一页</button>
+                    <button type="button" style="border: 0; background: none" id="btne">尾页</button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<div class="modal fade" id="myModalAdd" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="myModalLabel">用户添加</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+
+            </div>
+            <div class="modal-body">
+                <div class="row" style="margin-bottom: 10px;">
+                    <div class="col-sm-3 col-xs-3" style="padding: 0 10px 0 20px; margin-top: 5px">用户名：</div>
+                    <div class="col-sm-7 col-xs-8 " style="margin-bottom: 10px;">
+                        <input type="text" name="UserName" id="UserName" class="form-control" placeholder="请输入用户名" />
+                    </div>
+                    <div class="col-sm-3 col-xs-3" style="padding: 0 10px 0 20px; margin-top: 5px">密码：</div>
+                    <div class="col-sm-7 col-xs-8 " style="margin-bottom: 10px;">
+                        <input type="password" name="PassWord" id="PassWord" class="form-control" placeholder="请输入密码" />
+                    </div>
+                    <div class="col-sm-3 col-xs-3" style="padding: 0 10px 0 20px; margin-top: 5px">联系方式：</div>
+                    <div class="col-sm-7 col-xs-8 " style="margin-bottom: 10px;">
+                        <input type="text" name="ContactType" id="ContactType" class="form-control" placeholder="请输入联系方式" />
+                    </div>
+                    <div class="col-sm-3 col-xs-3" style="padding: 0 10px 0 20px; margin-top: 5px">联系地址：</div>
+                    <div class="col-sm-7 col-xs-8 " style="margin-bottom: 10px;">
+                        <input type="text" name="ContactAddress" id="ContactAddress" class="form-control" placeholder="请输入联系地址" />
+                    </div>
+                    <div class="col-sm-3 col-xs-3" style="padding: 0 10px 0 20px; margin-top: 5px">邮箱：</div>
+                    <div class="col-sm-7 col-xs-8 " style="margin-bottom: 10px;">
+                        <input type="text" name="Email" id="Email" class="form-control" placeholder="请输入邮箱" />
+                    </div>
+                    <div class="col-sm-3 col-xs-3" style="padding: 0 10px 0 20px; margin-top: 5px">用户权限：</div>
+
+                    <div class="col-sm-4 col-xs-6" style="margin-bottom: 10px;">
+                        <input type="text" id="role" hidden="hidden" />
+                        <div class="radio">
+                            <input type="radio" onclick="a()" name="role" onchange="a()" checked="checked" id="crzc" value="2">出认证处管理员
+                        </div>
+                    </div>
+                    <div class="col-sm-5 col-xs-6" style="margin-bottom: 10px;">
+                        <div class="radio">
+                            <input type="radio" onclick="a()" name="role" onchange="a()" id="gjzlb" value="3">国际展览部管理员
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                <button type="button" class="btn btn-primary" onclick="Add()">添加</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="myModalDetail" tabindex="-1" role="dialog" aria-labelledby="myModalLabel2">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="myModalLabel2">用户详细信息</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+
+            </div>
+            <div class="modal-body">
+                <div class="row" style="margin-bottom: 10px;">
+                    <div class="col-sm-3 col-xs-3" style="padding: 0 10px 0 20px; margin-top: 5px">用户名：</div>
+                    <div class="col-sm-7 col-xs-8 " style="margin-bottom: 10px;">
+                        <input type="text" name="UserName1" id="UserName1" class="form-control" placeholder="请输入用户名" />
+                    </div>
+                    <div class="col-sm-3 col-xs-3" style="padding: 0 10px 0 20px; margin-top: 5px">密码：</div>
+                    <div class="col-sm-7 col-xs-8 " style="margin-bottom: 10px;">
+                        <input type="text" name="PassWord1" id="PassWord1" class="form-control" placeholder="请输入密码" />
+                    </div>
+                    <div class="col-sm-3 col-xs-3" style="padding: 0 10px 0 20px; margin-top: 5px">联系方式：</div>
+                    <div class="col-sm-7 col-xs-8 " style="margin-bottom: 10px;">
+                        <input type="text" name="ContactType1" id="ContactType1" class="form-control" placeholder="请输入联系方式" />
+                    </div>
+                    <div class="col-sm-3 col-xs-3" style="padding: 0 10px 0 20px; margin-top: 5px">联系地址：</div>
+                    <div class="col-sm-7 col-xs-8 " style="margin-bottom: 10px;">
+                        <input type="text" name="ContactAddress1" id="ContactAddress1" class="form-control" placeholder="请输入联系地址" />
+                    </div>
+                    <div class="col-sm-3 col-xs-3" style="padding: 0 10px 0 20px; margin-top: 5px">邮箱：</div>
+                    <div class="col-sm-7 col-xs-8 " style="margin-bottom: 10px;">
+                        <input type="text" name="Email1" id="Email1" class="form-control" placeholder="请输入邮箱" />
+                    </div>
+                    <div class="col-sm-3 col-xs-3" style="padding: 0 10px 0 20px; margin-top: 5px">用户权限：</div>
+                    <div class="col-sm-7 col-xs-8" style="margin-bottom: 10px;" id="qyyh">
+                        <label for="inputfile" style="line-height: 37px;">企业用户</label>
+                    </div>
+                    <div class="col-sm-4 col-xs-6" id="choice" style="margin-bottom: 10px;">
+                        <div class="radio">
+                            <input type="radio" name="role" onclick="a()" id="crzc1" value="2">出认证处管理员
+                        </div>
+                    </div>
+                    <div class="col-sm-5 col-xs-6" id="choice1" style="margin-bottom: 10px;">
+                        <div class="radio">
+                            <input type="radio" name="role" onclick="a()" id="gjzlb1" value="3">国际展览部管理员
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                <button type="button" class="btn btn-primary" onclick="Save()">保存</button>
+            </div>
+        </div>
+    </div>
+</div>

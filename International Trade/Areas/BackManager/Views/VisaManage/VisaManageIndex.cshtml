@@ -1,0 +1,308 @@
+﻿@{
+    ViewBag.Title = "VisaManageIndex";
+    Layout = "~/Areas/BackManager/Views/Shared/Back_Layout.cshtml";
+}
+
+<script>
+
+
+    function ChangeDateFormat(jsondate) {
+        jsondate = jsondate.replace("/Date(", "").replace(")/", "");
+        if (jsondate.indexOf("+") > 0) {
+            jsondate = jsondate.substring(0, jsondate.indexOf("+"));
+        }
+        else if (jsondate.indexOf("-") > 0) {
+            jsondate = jsondate.substring(0, jsondate.indexOf("-"));
+        }
+        var date = new Date(parseInt(jsondate, 10));
+        var month = date.getMonth() + 1 < 10 ? "0" + (date.getMonth() + 1) : date.getMonth() + 1;
+        var currentDate = date.getDate() < 10 ? "0" + date.getDate() : date.getDate();
+        return date.getFullYear() + "-" + month + "-" + currentDate;
+    };
+
+    var result1;
+    var xa;
+    function IndexAjax() {
+        $.get('@Url.Action("VisaManageIndex1", "VisaManage")', { searchString: $("#searchString").val(), State: $("#VisaState").val() },//url: 获取服务器数据的地址 date:向服务器传递的参数 callback: 回调函数，在服务器响应后，页面更新前执行
+            function (result) {
+                result1 = result;
+                $('#box1_k').empty();
+                $.each(result.aa, function (Index, list) {
+                    var a = ChangeDateFormat(list.VisaTime);
+                    if (list.VisaState == "1") {
+                        $('#box1_k').append('<tr id="' + list.VisaID + '"><td><b>' + list.CompanyName + '</b></td><td>' + a + '</td><td><div style="width: 115px"><p style="padding: 2px 30px; border-radius: 40px; background: #CCCCFF; color: #fff; font-size: 0.9em; text-align: center">正在受理</p></div></td><td><button type="button" name="CheckPass" value="' + list.VisaID + '" style="border: 0; background: none">审核通过</button></td></tr>')
+                    }
+                    if (list.VisaState == "2") {
+                        $('#box1_k').append('<tr id="' + list.VisaID + '"><td><b>' + list.CompanyName + '</b></td><td>' + a + '</td><td><div style="width: 115px"><p style="padding: 2px 30px; border-radius: 40px; background: #9999CC; color: #fff; font-size: 0.9em; text-align: center">已审核</p></div></td><td> </td></tr>')
+                        //<button type="button" name="Finish" value="' + list.VisaID + '" style="border: 0; background: none">使馆认证完成</button>
+                    }
+
+                })
+
+                $($("[name='CheckPass']")).bind("click", function () {
+                    CheckPass($(this).val());
+                    IndexAjax();
+                });
+
+                $($("[name='Finish']")).bind("click", function () {
+                    FinishAjax($(this).val());
+                    IndexAjax();
+                });
+
+                $('#fy').empty();
+                if (result1.ItemNum > 0) {
+                    $('#fy').append("当前页：" + result1.pageNumber + ",共" + result1.pageNumx + ",页")
+                    $('#fybtn').show()
+                }
+                if (result1.ItemNum == 0) {
+                    $('#fy').append("暂无数据")
+                    $('#fybtn').hide()
+                }
+            })
+    }
+
+    function Search() {
+
+        $.get('@Url.Action("VisaManageIndex1", "VisaManage")', { searchString: $("#searchString").val(), State: $("#VisaState").val() },//url: 获取服务器数据的地址 date:向服务器传递的参数 callback: 回调函数，在服务器响应后，页面更新前执行
+                function (result) {
+                    result1 = result;
+                    $('#box1_k').empty();
+                    $.each(result.aa, function (Index, list) {
+                        var a = ChangeDateFormat(list.VisaTime);
+                        if (list.VisaState == "1") {
+                            $('#box1_k').append('<tr id="' + list.VisaID + '"><td><b>' + list.CompanyName + '</b></td><td>' + a + '</td><td><div style="width: 115px"><p style="padding: 2px 30px; border-radius: 40px; background: #CCCCFF; color: #fff; font-size: 0.9em; text-align: center">正在受理</p></div></td><td><button type="button" name="CheckPass" value="' + list.VisaID + '" style="border: 0; background: none">审核通过</button></td></tr>')
+                        }
+                        if (list.VisaState == "2") {
+                            $('#box1_k').append('<tr id="' + list.VisaID + '"><td><b>' + list.CompanyName + '</b></td><td>' + a + '</td><td><div style="width: 115px"><p style="padding: 2px 30px; border-radius: 40px; background: #9999CC; color: #fff; font-size: 0.9em; text-align: center">已审核</p></div></td><td> </tr>')
+                        }
+                    })
+
+                    $($("[name='CheckPass']")).bind("click", function () {
+                        DeliveryAjax($(this).val());
+                        IndexAjax();
+                    });
+
+                    $($("[name='Finish']")).bind("click", function () {
+                        FinishAjax($(this).val());
+                        IndexAjax();
+                    });
+
+                    $('#fy').empty();
+                    if (result1.ItemNum > 0) {
+                        $('#fy').append("当前页：" + result1.pageNumber + ",共" + result1.pageNumx + ",页")
+                        $('#fybtn').show()
+                    }
+                    if (result1.ItemNum == 0) {
+                        $('#fy').append("暂无数据")
+                        $('#fybtn').hide()
+                    }
+                }
+        )
+    }
+
+    function CheckPass(id) {
+        $.post('@Url.Action("CheckPass", "VisaManage")', { id: id },
+                       function (result) {
+                           if (result == "已审核！") {
+                               alert(result);
+                               window.location.href = '../VisaManage/VisaManageIndex';
+                           }
+                           else {
+                               alert(result);
+                           }
+                       }
+
+                   )
+    }
+
+    function FinishAjax(id) {
+        $.post('@Url.Action("Finish", "VisaManage")', { id: id },
+           function (result) {
+               if (result == "使馆认证完成") {
+                   alert(result);
+                   window.location.href = '../VisaManage/VisaManageIndex';
+               }
+               else {
+                   alert(result);
+               }
+           }
+
+       )
+        }
+
+        function DetailAjax(id) {
+
+            $.post('@Url.Action("Detail", "VisaManage")', { id: id },
+
+                    function (result) {
+                        IndexAjax();
+                        $('#CompanyName1').empty();
+                        $('#CompanyName1').append(result.CompanyName);
+                        $('#VisaState1').empty();
+                        if (result.VisaState == "1")
+                        {
+                            $('#VisaState1').append("正在受理");
+                        }
+                        if (result.VisaState == "2")
+                        {
+                            $('#VisaState1').append("已审核");
+                        }
+                        $('#VisaTime1').empty();
+                        var a = ChangeDateFormat(result.VisaTime);
+                        $('#VisaTime1').append(a);
+
+                    }
+
+                )
+    }
+
+    $(function () {
+        $('#box1_k').on("click", "tr", function () {
+            $(this).parent().find("tr.focus").toggleClass("focus");
+            $(this).toggleClass("focus");
+            xa = $(this).attr("id");
+        })
+
+
+        $("#Detail").click(function () {
+            if (xa == undefined || xa == "" || xa == null) {
+                alert("请选中一行");
+                return false;
+            }
+            DetailAjax(xa);
+        });
+    })
+
+    $(function () {
+        IndexAjax();
+
+        $("#check").click(function () {
+            $('#page').val("1");
+            Search();
+        });
+
+        $("#btnf").click(function () {
+            $('#page').val("1");
+            Search();
+        });
+
+        $("#btns").click(function () {
+            $('#page').val(result1.pageNumber <= 1 ? result1.pageNumber : result1.pageNumber - 1);
+            Search();
+        });
+
+        $("#btnx").click(function () {
+            $('#page').val(result1.pageNumber >= result1.pageNumx ? result1.pageNumber : result1.pageNumber + 1);
+            Search();
+        });
+
+        $("#btne").click(function () {
+            $('#page').val(result1.pageNumx);
+            Search();
+        });
+    });
+
+</script>
+
+<header class="page-header">
+    <div class="container-fluid">
+        <h2 class="no-margin-bottom">签证管理</h2>
+    </div>
+</header>
+
+
+<div style="padding-top: 2.5rem; padding-right: 2.5rem; padding-left: 2.5rem;">
+    <div style="background: #fff">
+        <div class="row" style="line-height: 34px; margin-top: 20px; padding: 25px;">
+            <div class="col-md-1  col-xs-5" style="font-size: 16px; margin-left: 0.5%;">
+                企业名称:
+            </div>
+            <div class="col-md-2  col-xs-5" style="font-size: 16px;">
+                <input type="text" class="form-control" name="searchString" id="searchString">
+            </div>
+            <div class="col-md-1  col-xs-5" style="font-size: 16px;">
+                签证状态:
+            </div>
+            <div class="col-md-2  col-xs-5" style="font-size: 16px;">
+
+                <select class="form-control" id="VisaState" name="VisaState">
+                    <option value="4">请选择</option>
+                    <option value="1">正在受理</option>
+                    <option value="2">已审核</option>
+                </select>
+            </div>
+            <div class="col-md-2  col-xs-2">
+                <button type="button" class="btn btn-default" style="background: #796AEE; color: #fff" onclick="Search()">查询</button>
+            </div>
+        </div>
+
+
+        <table class="table table-hover" style="margin-left: 25px; width: 1500px">
+            <thead>
+                <tr>
+                    <th>企业名称</th>
+                    <th>签证时间</th>
+                    <th>签证状态</th>
+                    <th>操作</th>
+                </tr>
+            </thead>
+            <tbody id="box1_k">
+            </tbody>
+        </table>
+
+        <div class="row" style="text-align: end">
+            <div class="col-md-12  col-xs-12">
+                <button type="button" style="background: #796AEE; color: #fff" class="btn btn-default" data-toggle="modal" data-target="#myModalDetail" id="Detail">查看详细</button>
+
+            </div>
+
+        </div>
+
+        <div class="row" style="text-align: center">
+            <div class="col-md-12  col-xs-12">
+                <div id="fy">
+                </div>
+                <div id="fybtn">
+                    <input type="text" id="page" value="1" name="page" hidden="hidden" />
+                    <button type="button" style="border: 0; background: none" id="btnf">首页</button>
+                    <button type="button" style="border: 0; background: none" id="btns">上一页</button>
+                    <button type="button" style="border: 0; background: none" id="btnx">下一页</button>
+                    <button type="button" style="border: 0; background: none" id="btne">尾页</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="myModalDetail" tabindex="-1" role="dialog" aria-labelledby="myModalLabel2">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="myModalLabel2">签证详细信息</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+
+            </div>
+            <div class="modal-body">
+                <div class="row" style="margin-bottom: 10px;">
+                    <div class="col-sm-3 col-xs-3" style="padding: 0 10px 0 20px; margin-top: 5px">企业名称：</div>
+                    <div class="col-sm-7 col-xs-8 " style="margin-bottom: 10px;">
+                        <label for="inputfile" id="CompanyName1" style="line-height: 37px;"></label>
+                    </div>
+                    <div class="col-sm-3 col-xs-3" style="padding: 0 10px 0 20px; margin-top: 5px">签证状态：</div>
+                    <div class="col-sm-7 col-xs-8 " style="margin-bottom: 10px;">
+                        <label for="inputfile" id="VisaState1" style="line-height: 37px;"></label>
+                    </div>
+                    <div class="col-sm-3 col-xs-3" style="padding: 0 10px 0 20px; margin-top: 5px">签证时间：</div>
+                    <div class="col-sm-7 col-xs-8 " style="margin-bottom: 10px;">
+                        <label for="inputfile" id="VisaTime1" style="line-height: 37px;"></label>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                @*<button type="button" class="btn btn-primary" onclick="save()" id="Save" name="Save">保存</button>*@
+            </div>
+        </div>
+    </div>
+</div>

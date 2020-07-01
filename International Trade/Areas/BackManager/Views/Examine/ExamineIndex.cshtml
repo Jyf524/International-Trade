@@ -1,0 +1,247 @@
+﻿@{
+    ViewBag.Title = "ExamineIndex";
+    Layout = "~/Areas/BackManager/Views/Shared/Back_Layout.cshtml";
+}
+<script src="~/Scripts/jquery-1.7.1.min.js"></script>
+<script>
+
+    $(function () {
+        $('#box1_k').on("click", "tr", function () {
+            $(this).parent().find("tr.focus").toggleClass("focus");
+            $(this).toggleClass("focus");
+            xa = $(this).attr("id");
+        })
+
+
+        $("#Detail").click(function () {
+            if (xa == undefined || xa == "" || xa == null) {
+                alert("请选中一行");
+                return false;
+            }
+            DetailAjax(xa);
+        });
+
+        $("#BtnPass").click(function () {
+            var arr1 = [];
+            var a = document.getElementsByName('choice');
+            for (var i = 0; i < a.length; i++) {
+                if (a[i].checked == true) {
+                    arr1.push(a[i].value);
+                }
+            }
+            if (arr1.length != 0) {
+                $.post(
+                        '@Url.Action("Pass", "Examine")',
+                    "arr=" + arr1,
+                    function (result) {
+                        IndexAjax();
+                        document.getElementById("allcheck").checked = false;
+                    }
+                )
+            }
+        })
+
+        $("#BtnNoPass").click(function () {
+            var arr1 = [];
+            var a = document.getElementsByName('choice');
+            for (var i = 0; i < a.length; i++) {
+                if (a[i].checked == true) {
+                    arr1.push(a[i].value);
+                }
+            }
+            if (arr1.length != 0) {
+                $.post(
+                        '@Url.Action("NoPass", "Examine")',
+                    "arr=" + arr1,
+                    function (result) {
+                        IndexAjax();
+                        document.getElementById("allcheck").checked = false;
+                    }
+                )
+            }
+        })
+       
+    })
+
+    
+
+    function demo() {
+        var allcheck = document.getElementById("allcheck");
+        var choice = document.getElementsByName("choice");
+        for (var i = 0; i < choice.length; i++) {
+            choice[i].checked = allcheck.checked;
+        }
+    }
+
+    //点击子复选框,全选框 选中、取消
+    function setAll() {
+        if (!$(".checkbox-template").checked) {
+            $("#allcheck").prop("checked", false); // 子复选框某个不选择，全选也被取消
+        }
+        var choicelength = $("input[type='checkbox'][class='checkbox-template']").length;
+        var choiceselect = $("input[type='checkbox'][class='checkbox-template']:checked").length;
+
+        if (choicelength == choiceselect + 1) {
+            $("#allcheck").prop("checked", true);   // 子复选框全部部被选择，全选也被选择；1.对于HTML元素我们自己自定义的DOM属性，在处理时，使用attr方法；2.对于HTML元素本身就带有的固有属性，在处理时，使用prop方法。
+        }
+    }
+
+    var result1;
+    var xa;
+    function IndexAjax() {
+        $.get('@Url.Action("ExamineIndex1", "Examine")', $('#form1').serialize(),//url: 获取服务器数据的地址 date:向服务器传递的参数 callback: 回调函数，在服务器响应后，页面更新前执行
+            function (result) {
+                result1 = result;
+                $('#box1_k').empty();
+                $.each(result.aa, function (Index, list) {
+                    var sArray = list.BusinessCard.split(',');
+                    if (list.ExamineState == "1") {
+                        $('#box1_k').append('<tr><td><input type="checkbox" name="choice" value=' + list.ExamineID + ' class="checkbox-template" onclick="setAll()" /></td><td><a href="../Examine/ExamineDetail?ID=' + list.ExamineID + '"><b>' + list.CompanyName + '</b></a></td><td>' + list.ExamineName + '</td><td><a href=' + list.PayCard + '><img src="' + list.PayCard + '" width="150"/></a></td><td><a href=' + sArray[0] + '><img src="' + sArray[0] + '" width="150px" class="img-responsive" /></a><a href=' + sArray[1] + '><img src="' + sArray[1] + '"  width="150px" class="img-responsive" /></a></td><td><div style="width: 130px"><p style="padding: 2px 30px; border-radius: 40px; background: #9999CC; color: #fff; font-size: 0.9em; text-align: center">审核通过</p></div></td></tr>')
+                    }
+                    if (list.ExamineState == "2") {
+                        $('#box1_k').append('<tr><td><input type="checkbox" name="choice" value=' + list.ExamineID + ' class="checkbox-template" onclick="setAll()" /></td><td><a href="../Examine/ExamineDetail?ID=' + list.ExamineID + '"><b>' + list.CompanyName + '</b></a></td><td>' + list.ExamineName + '</td><td><a href=' + list.PayCard + '><img src="' + list.PayCard + '" width="150"/></a></td><td><a href=' + sArray[0] + '><img src="' + sArray[0] + '"  width="150px" class="img-responsive" /></a><a href=' + sArray[1] + '><img src="' + sArray[1] + '"  width="150px" class="img-responsive" /></a></td><td><div style="width: 130px"><p style="padding: 2px 30px; border-radius: 40px; background: #babae2; color: #fff; font-size: 0.9em; text-align: center">审核不通过</p></div></td></tr>')
+                    }
+                    if (list.ExamineState == "3") {
+                        $('#box1_k').append('<tr><td><input type="checkbox" name="choice" value=' + list.ExamineID + ' class="checkbox-template" onclick="setAll()" /></td><td><a href="../Examine/ExamineDetail?ID=' + list.ExamineID + '"><b>' + list.CompanyName + '</b></a></td><td>' + list.ExamineName + '</td><td><a href=' + list.PayCard + '><img src="' + list.PayCard + '" width="150"/></a></td><td><a href=' + sArray[0] + '><img src="' + sArray[0] + '"  width="150px" class="img-responsive" /></a><a href=' + sArray[1] + '><img src="' + sArray[1] + '"  width="150px" class="img-responsive" /></a></td><td><div style="width: 130px"><p style="padding: 2px 30px; border-radius: 40px; background: #CCCCFF; color: #fff; font-size: 0.9em; text-align: center">文件已受理</p></div></td></tr>')
+                    }
+                })
+
+                $('#fy').empty();
+                if (result1.ItemNum > 0) {
+                    $('#fy').append("当前页：" + result1.pageNumber + ",共" + result1.pageNumx + ",页")
+                    $('#fybtn').show()
+                }
+                if (result1.ItemNum == 0) {
+                    $('#fy').append("暂无数据")
+                    $('#fybtn').hide()
+                }
+            })
+    }
+
+    function Search() {
+
+        $.get('@Url.Action("ExamineIndex1", "Examine")', { searchString: $("#CompanyName").val(), Year: $("#Year").val(), page: $("#page").val() },//url: 获取服务器数据的地址 date:向服务器传递的参数 callback: 回调函数，在服务器响应后，页面更新前执行
+                function (result) {
+                    result1 = result;
+                    $('#box1_k').empty();
+                    $.each(result.aa, function (Index, list) {
+                        if (list.ExamineState == "1") {
+                            $('#box1_k').append('<tr><td><input type="checkbox" name="choice" value=' + list.ExamineID + ' class="checkbox-template" onclick="setAll()" /></td><td><a href="../Examine/ExamineDetail?ID=' + list.ExamineID + '"><b>' + list.CompanyName + '</b></a></td><td>' + list.ExamineName + '</td><td><a href=' + list.PayCard + '><img src="' + list.PayCard + '" width="150"/></a></td><td><a href=' + sArray[0] + '><img src="' + sArray[0] + '" width="150px" class="img-responsive" /></a><a href=' + sArray[1] + '><img src="' + sArray[1] + '"  width="150px" class="img-responsive" /></a></td><td><div style="width: 130px"><p style="padding: 2px 30px; border-radius: 40px; background: #9999CC; color: #fff; font-size: 0.9em; text-align: center">审核通过</p></div></td></tr>')
+                        }
+                        if (list.ExamineState == "2") {
+                            $('#box1_k').append('<tr><td><input type="checkbox" name="choice" value=' + list.ExamineID + ' class="checkbox-template" onclick="setAll()" /></td><td><a href="../Examine/ExamineDetail?ID=' + list.ExamineID + '"><b>' + list.CompanyName + '</b></a></td><td>' + list.ExamineName + '</td><td><a href=' + list.PayCard + '><img src="' + list.PayCard + '" width="150"/></a></td><td><a href=' + sArray[0] + '><img src="' + sArray[0] + '"  width="150px" class="img-responsive" /></a><a href=' + sArray[1] + '><img src="' + sArray[1] + '"  width="150px" class="img-responsive" /></a></td><td><div style="width: 130px"><p style="padding: 2px 30px; border-radius: 40px; background: #babae2; color: #fff; font-size: 0.9em; text-align: center">审核不通过</p></div></td></tr>')
+                        }
+                        if (list.ExamineState == "3") {
+                            $('#box1_k').append('<tr><td><input type="checkbox" name="choice" value=' + list.ExamineID + ' class="checkbox-template" onclick="setAll()" /></td><td><a href="../Examine/ExamineDetail?ID=' + list.ExamineID + '"><b>' + list.CompanyName + '</b></a></td><td>' + list.ExamineName + '</td><td><a href=' + list.PayCard + '><img src="' + list.PayCard + '" width="150"/></a></td><td><a href=' + sArray[0] + '><img src="' + sArray[0] + '"  width="150px" class="img-responsive" /></a><a href=' + sArray[1] + '><img src="' + sArray[1] + '"  width="150px" class="img-responsive" /></a></td><td><div style="width: 130px"><p style="padding: 2px 30px; border-radius: 40px; background: #CCCCFF; color: #fff; font-size: 0.9em; text-align: center">文件已受理</p></div></td></tr>')
+                        }
+
+                    })
+
+                    $('#fy').empty();
+                    if (result1.ItemNum > 0) {
+                        $('#fy').append("当前页：" + result1.pageNumber + ",共" + result1.pageNumx + ",页")
+                        $('#fybtn').show()
+                    }
+                    if (result1.ItemNum == 0) {
+                        $('#fy').append("暂无数据")
+                        $('#fybtn').hide()
+                    }
+                }
+        )
+    }
+
+
+    $(function () {
+        IndexAjax();
+
+        $("#check").click(function () {
+            $('#page').val("1");
+            Search();
+        });
+
+        $("#btnf").click(function () {
+            $('#page').val("1");
+            Search();
+        });
+
+        $("#btns").click(function () {
+            $('#page').val(result1.pageNumber <= 1 ? result1.pageNumber : result1.pageNumber - 1);
+            Search();
+        });
+
+        $("#btnx").click(function () {
+            $('#page').val(result1.pageNumber >= result1.pageNumx ? result1.pageNumber : result1.pageNumber + 1);
+            Search();
+        });
+
+        $("#btne").click(function () {
+            $('#page').val(result1.pageNumx);
+            Search();
+        });
+    });
+</script>
+
+<header class="page-header">
+    <div class="container-fluid">
+        <h2 class="no-margin-bottom">企业年审材料审核页</h2>
+    </div>
+</header>
+<div style="padding-top: 2.5rem; padding-right: 2.5rem; padding-left: 2.5rem;">
+    <div style="background: #fff">
+        <div class="row" style="line-height: 34px; margin-top: 20px; padding: 25px;">
+            <div class="col-md-1  col-xs-5" style="font-size: 16px; margin-left: 0.5%;">
+                企业名称:
+            </div>
+            <div class="col-md-2  col-xs-5" style="font-size: 16px;">
+                <input type="text" class="form-control" name="CompanyName" id="CompanyName">
+            </div>
+            <div class="col-md-1  col-xs-5" style="font-size: 16px;">
+                年份:
+            </div>
+            <div class="col-md-2  col-xs-5" style="font-size: 16px;">
+                <input type="text" class="form-control" name="Year" id="Year" oninput="value=value.replace(/[^\d]/g,'')">
+            </div>
+            <div class="col-md-2  col-xs-2">
+                <button type="button" class="btn btn-default" style="background: #796AEE; color: #fff" onclick="Search()">查询</button>
+            </div>
+        </div>
+
+        <table class="table table-bordered table-hover" style="margin-left: 25px; width: 1500px">
+            <thead>
+                <tr>
+                    <th>
+                        <input type="checkbox" id="allcheck" class="checkbox-template" onclick="demo()" /></th>
+                    <th>企业名称</th>
+                    <th>年审材料名称</th>
+                    <th>付款凭证</th>
+                    <th>营业执照</th>
+                    <th>审核状态</th>
+                </tr>
+            </thead>
+            <tbody id="box1_k">
+            </tbody>
+        </table>
+        <div class="row" style="text-align: end">
+            <div class="col-md-12  col-xs-12">
+                <button type="button" style="background: #796AEE; color: #fff" class="btn btn-default" id="BtnPass">通过</button>
+                <button type="button" style="background: #796AEE; color: #fff" class="btn btn-default" id="BtnNoPass">不通过</button>
+            </div>
+        </div>
+        <div class="row" style="text-align: center">
+            <div class="col-md-12  col-xs-12">
+                <div id="fy">
+                </div>
+                <div id="fybtn">
+                    <input type="text" id="page" value="1" name="page" hidden="hidden" />
+                    <button type="button" style="border: 0; background: none" id="btnf">首页</button>
+                    <button type="button" style="border: 0; background: none" id="btns">上一页</button>
+                    <button type="button" style="border: 0; background: none" id="btnx">下一页</button>
+                    <button type="button" style="border: 0; background: none" id="btne">尾页</button>
+                </div>
+            </div>
+        </div>
+
+
+
+    </div>
+</div>

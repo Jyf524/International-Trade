@@ -1,0 +1,165 @@
+﻿@{
+    ViewBag.Title = "ExhibitionDetail";
+    Layout = "~/Views/Shared/ForeLayout.cshtml";
+}
+<script src="~/Content/JYF/jquery-1.9.0.min.js"></script>
+<script src="~/Content/JYF/alert.js"></script>
+<link href="~/Content/JYF/alert.css" rel="stylesheet" />
+<script>
+
+    var M = {
+
+    }
+    function Back() {
+
+        history.back(-1);
+
+    }
+
+    function Feedback()
+    {
+        $.post('@Url.Action("TradeExamineFeedback", "Personal")', { id: UrlSearch(), TradeExamineFeedback: $("#TradeExamineFeedback").val() },
+                          function (result) {
+                              if (result == "反馈成功") {
+                                  if (M.dialog2) {
+                                      return M.dialog2.show();
+                                  }
+                                  M.dialog2 = jqueryAlert({
+                                      'width': '200px',
+                                      'height': '100px',
+                                      'content': '反馈成功!',
+                                      'modal': true,
+                                      'buttons': {
+                                          '确定': function () {
+                                              M.dialog2.close();
+                                              window.location.href = '../Personal/ExhibitionDetail?ID=' + UrlSearch() + '';
+                                          }
+                                      }
+                                  })
+                              }
+                              else {
+                                  if (M.dialog2) {
+                                      return M.dialog2.show();
+                                  }
+                                  M.dialog2 = jqueryAlert({
+                                      'width': '200px',
+                                      'height': '100px',
+                                      'content': ''+result+'',
+                                      'modal': true,
+                                      'buttons': {
+                                          '确定': function () {
+                                              M.dialog2.close();
+                                              window.location.href = '../Personal/ExhibitionDetail?ID=' + UrlSearch() + '';
+                                          }
+                                      }
+                                  })
+                              }
+                          }
+
+                      )
+
+    }
+
+    function UrlSearch() {
+        var name, id;
+        var str = location.href; //获取到整个地址
+        var num = str.indexOf("?")
+        str = str.substr(num + 1); //取得num+1后所有参数，这里的num+1是下标 str.substr(start [, length ]
+        var arr = str.split("&"); //以&分割各个参数放到数组里
+        for (var i = 0; i < arr.length; i++) {
+            num = arr[i].indexOf("=");
+            if (num > 0) {
+                id = arr[i].substring(0, num);
+                id = arr[i].substr(num + 1);
+                this[name] = id;
+                return id;
+            }
+        }
+    }
+
+  
+
+    $(function IndexAjax(id) {
+        $.get('@Url.Action("ExhibitionDetail1", "Personal")', { id: UrlSearch() },//url: 获取服务器数据的地址 date:向服务器传递的参数 callback: 回调函数，在服务器响应后，页面更新前执行
+        function (result) {
+            var list = result.aa[0];
+            var a = ChangeDateFormat(list.TradeExamineTime);
+            if (list.TradeExamineFeedback != null && list.TradeExamineFeedback != "") {
+                    $('#fk').hide()
+                }
+                else { $('#fk').show() }
+                if (list.TradeExamineState == "1") {
+                    $('#box1_k').empty();
+                    $('#box1_k').append('<div class="row" style="border-bottom: solid 1px #e6e6e6"><div class="col-xs-12 col-sm-12" style="text-align: center"><p style="font-size: 20px;">' + list.TradeTitle + '</p></div></div><div class="row" style="font-size: 16px; margin-top: 5px"><div class="col-xs-5 col-sm-5"><p style="float: right; line-height: 34px;">' + a + '</p></div><div class="col-xs-6 col-sm-6" style="line-height: 34px; text-align: end">' + list.TradeAddress + '</div></div><div class="row"><div class="col-xs-12 col-sm-12"><img src="../Content/img/bg.jpg"  class="img-responsive"></div></div><div class="row" style="font-size: 16px; margin-top: 5px"><div class="col-xs-7 col-sm-7"><p style="line-height: 34px;">展会申请状态:审核已受理</p></div></div><div class="row" style="font-size: 16px; margin-top: 5px"><div class="col-xs-12 col-sm-12"><p style="float: right; line-height: 34px;">展会简介:' + list.TradeIntroduction + '</p></div></div><div class="row" style="font-size: 16px; margin-top: 5px"><div class="col-xs-12 col-sm-12"><p style="float: right; line-height: 34px;">展会内容:' + list.TradeInfo + '。</p></div></div>')
+                }
+                if (list.TradeExamineState == "2") {
+                    $('#box1_k').empty();
+                    $('#box1_k').append('<div class="row" style="border-bottom: solid 1px #e6e6e6"><div class="col-xs-12 col-sm-12" style="text-align: center"><p style="font-size: 20px;">' + list.TradeTitle + '</p></div></div><div class="row" style="font-size: 16px; margin-top: 5px"><div class="col-xs-5 col-sm-5"><p style="float: right; line-height: 34px;">' + a + '</p></div><div class="col-xs-6 col-sm-6" style="line-height: 34px; text-align: end">' + list.TradeAddress + '</div></div><div class="row"><div class="col-xs-12 col-sm-12"><img src="../Content/img/bg.jpg"  class="img-responsive"></div></div><div class="row" style="font-size: 16px; margin-top: 5px"><div class="col-xs-7 col-sm-7"><p style="line-height: 34px;">展会申请状态:审核已通过</p></div></div><div class="row" style="font-size: 16px; margin-top: 5px"><div class="col-xs-12 col-sm-12"><p style="float: right; line-height: 34px;">展会简介:' + list.TradeIntroduction + '</p></div></div><div class="row" style="font-size: 16px; margin-top: 5px"><div class="col-xs-12 col-sm-12"><p style="float: right; line-height: 34px;">展会内容:' + list.TradeInfo + '。</p></div></div>')
+                }
+                if (list.TradeExamineState == "3") {
+                    $('#box1_k').empty();
+                    $('#box1_k').append('<div class="row" style="border-bottom: solid 1px #e6e6e6"><div class="col-xs-12 col-sm-12" style="text-align: center"><p style="font-size: 20px;">' + list.TradeTitle + '</p></div></div><div class="row" style="font-size: 16px; margin-top: 5px"><div class="col-xs-5 col-sm-5"><p style="float: right; line-height: 34px;">' + a + '</p></div><div class="col-xs-6 col-sm-6" style="line-height: 34px; text-align: end">' + list.TradeAddress + '</div></div><div class="row"><div class="col-xs-12 col-sm-12"><img src="../Content/img/bg.jpg"  class="img-responsive"></div></div><div class="row" style="font-size: 16px; margin-top: 5px"><div class="col-xs-7 col-sm-7"><p style="line-height: 34px;">展会申请状态:审核已驳回</p></div></div><div class="row" style="font-size: 16px; margin-top: 5px"><div class="col-xs-12 col-sm-12"><p style="float: right; line-height: 34px;">展会简介:' + list.TradeIntroduction + '</p></div></div><div class="row" style="font-size: 16px; margin-top: 5px"><div class="col-xs-12 col-sm-12"><p style="float: right; line-height: 34px;">展会内容:' + list.TradeInfo + '。</p></div></div>')
+                }
+                if (list.TradeExamineState == "4") {
+                    $('#box1_k').empty();
+                    $('#box1_k').append('<div class="row" style="border-bottom: solid 1px #e6e6e6"><div class="col-xs-12 col-sm-12" style="text-align: center"><p style="font-size: 20px;">' + list.TradeTitle + '</p></div></div><div class="row" style="font-size: 16px; margin-top: 5px"><div class="col-xs-5 col-sm-5"><p style="float: right; line-height: 34px;">' + a + '</p></div><div class="col-xs-6 col-sm-6" style="line-height: 34px; text-align: end">' + list.TradeAddress + '</div></div><div class="row"><div class="col-xs-12 col-sm-12"><img src="../Content/img/bg.jpg"  class="img-responsive"></div></div><div class="row" style="font-size: 16px; margin-top: 5px"><div class="col-xs-7 col-sm-7"><p style="line-height: 34px;">展会申请状态:确认反馈</p></div></div><div class="row" style="font-size: 16px; margin-top: 5px"><div class="col-xs-12 col-sm-12"><p style="float: right; line-height: 34px;">展会简介:' + list.TradeIntroduction + '</p></div></div><div class="row" style="font-size: 16px; margin-top: 5px"><div class="col-xs-12 col-sm-12"><p style="float: right; line-height: 34px;">展会内容:' + list.TradeInfo + '。</p></div></div>')
+                }
+                if (list.TradeExamineState == "6") {
+                    $('#box1_k').empty();
+                    $('#box1_k').append('<div class="row" style="border-bottom: solid 1px #e6e6e6"><div class="col-xs-12 col-sm-12" style="text-align: center"><p style="font-size: 20px;">' + list.TradeTitle + '</p></div></div><div class="row" style="font-size: 16px; margin-top: 5px"><div class="col-xs-5 col-sm-5"><p style="float: right; line-height: 34px;">' + a + '</p></div><div class="col-xs-6 col-sm-6" style="line-height: 34px; text-align: end">' + list.TradeAddress + '</div></div><div class="row"><div class="col-xs-12 col-sm-12"><img src="../Content/img/bg.jpg"  class="img-responsive"></div></div><div class="row" style="font-size: 16px; margin-top: 5px"><div class="col-xs-7 col-sm-7"><p style="line-height: 34px;">展会申请状态:申请完成</p></div></div><div class="row" style="font-size: 16px; margin-top: 5px"><div class="col-xs-12 col-sm-12"><p style="float: right; line-height: 34px;">展会简介:' + list.TradeIntroduction + '</p></div></div><div class="row" style="font-size: 16px; margin-top: 5px"><div class="col-xs-12 col-sm-12"><p style="float: right; line-height: 34px;">展会内容:' + list.TradeInfo + '。</p></div></div>')
+                }
+                })
+        
+    })
+
+    function ChangeDateFormat(jsondate) {
+        jsondate = jsondate.replace("/Date(", "").replace(")/", "");
+        if (jsondate.indexOf("+") > 0) {
+            jsondate = jsondate.substring(0, jsondate.indexOf("+"));
+        }
+        else if (jsondate.indexOf("-") > 0) {
+            jsondate = jsondate.substring(0, jsondate.indexOf("-"));
+        }
+        var date = new Date(parseInt(jsondate, 10));
+        var month = date.getMonth() + 1 < 10 ? "0" + (date.getMonth() + 1) : date.getMonth() + 1;
+        var currentDate = date.getDate() < 10 ? "0" + date.getDate() : date.getDate();
+        return date.getFullYear() + "-" + month + "-" + currentDate;
+    };
+
+</script>
+
+<div class="container-fluid">
+    <div class="row xs" style="height: 50px;">
+        <div class="bs-example bs-navbar-top-example" data-example-id="navbar-static-top">
+            <nav class="navbar navbar-default navbar-static-top">
+                <!-- We use the fluid option here to avoid overriding the fixed width of a normal container within the narrow content columns. -->
+                <div class="container-fluid">
+                    <div class="navbar-header" style="height:50px;">
+                        <div style="font-size: 16px; line-height: 50px;">
+                            <a class="navbar-brand" onclick="Back()"><span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span></a>
+                            <p style="text-align: center;width: 86%;height: 100%;">展位申请详细页</p>
+                        </div>
+                    </div>
+
+                </div>
+            </nav>
+        </div>
+    </div>
+</div>
+
+<div style="padding:1.5rem;margin-bottom: 70px;">
+    <div id="box1_k"></div>
+
+<div class="row" style="font-size: 16px; margin-top: 5px;padding:1rem">
+    <div id="fk" class="form-group" style="margin-top: 20px;">
+        <label for="name" style="font-size: 16px">反馈信息:</label>
+        <textarea class="form-control" rows="3" style="resize: none" id="TradeExamineFeedback"></textarea>
+        <div style="text-align: end;">
+            <button type="button" class="btn btn-default" onclick="Feedback()" style="background: #e64a4a; color: #fff">
+                反馈
+            </button>
+        </div>
+    </div>
+
+</div>
+</div>

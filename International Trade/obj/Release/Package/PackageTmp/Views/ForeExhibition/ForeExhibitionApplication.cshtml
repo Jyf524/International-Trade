@@ -1,0 +1,241 @@
+﻿@{
+    ViewBag.Title = "ForeExhibitionApplication";
+    Layout = "~/Views/Shared/ForeLayout.cshtml";
+}
+
+
+<link href="~/Content/css/fileinput.css" rel="stylesheet" />
+<link href="~/Content/css/fileinput.min.css" rel="stylesheet" />
+
+
+<script src="~/Scripts/fileinput.js"></script>
+<script src="~/Scripts/fileinput.min.js"></script>
+
+<script src="~/Scripts/fileinput_locale_zh.js"></script>
+
+<script src="~/Content/JYF/alert.js"></script>
+<link href="~/Content/JYF/alert.css" rel="stylesheet" />
+
+<script>
+
+    var M = {
+
+    }
+
+    function UrlSearch() {
+        var name, id;
+        var str = location.href; //获取到整个地址
+        var num = str.indexOf("?")
+        str = str.substr(num + 1); //取得num+1后所有参数，这里的num+1是下标 str.substr(start [, length ]
+        var arr = str.split("&"); //以&分割各个参数放到数组里
+        for (var i = 0; i < arr.length; i++) {
+            num = arr[i].indexOf("=");
+            if (num > 0) {
+                id = arr[i].substring(0, num);
+                id = arr[i].substr(num + 1);
+                this[name] = id;
+                return id;
+            }
+        }
+    }
+
+    $(function () {
+        $("[class='kv-upload-progress hide']").hide();
+        $("[class='btn btn-default kv-fileinput-upload fileinput-upload-button']").hide();
+        $("[class='hide btn btn-default fileinput-cancel fileinput-cancel-button']").hide();
+        $("[class='btn btn-default fileinput-remove fileinput-remove-button']").hide();
+
+
+    })
+
+    $('#file-0').fileinput({
+        language: 'zh', //设置语言
+        uploadUrl: "/FileUpload/Upload", //上传的地址
+        allowedFileExtensions: ['jpg', 'png', 'gif', 'txt', 'doc', 'docx'],//接收的文件后缀,
+        maxFileCount: 1,
+        minFileCount: 1,
+        showPreview: false,//隐藏
+        enctype: 'multipart/form-data',
+        showUpload: false, //是否显示上传按钮
+        showCaption: true,//是否显示标题
+        browseClass: "btn btn-primary", //按钮样式             
+        previewFileIcon: "<i class='glyphicon glyphicon-king'></i>",
+        msgFilesTooMany: "选择上传的文件数量({n}) 超过允许的最大数值{m}！"
+    }
+   );
+    
+    $(function ()
+    {
+        $('#idd').val(UrlSearch());
+
+        
+    })
+
+
+    function Back()
+    {
+        history.back(-1);
+    }
+
+    function upload() {
+
+        var fd = new FormData();
+
+        fd.append("TradeDocument", $('#file-0')[0].files[0]);
+        fd.append("idd", $('#idd').val());
+        fd.append("TradeArea", $('#TradeArea').val());
+        $.ajax({
+            url: "@Url.Action("ForeExhibitionApplication1", "ForeExhibition")",//调用控制器中的方法
+            type: "post",
+            dataType: "json",
+            data: fd,
+            async: false,
+            cache: false,
+            contentType: false,
+            processData: false,
+            success: function (data) {
+                if (data == "申请成功") {
+
+                    if (M.dialog2) {
+                        return M.dialog2.show();
+                    }
+                    M.dialog2 = jqueryAlert({
+                        'width': '200px',
+                        'height': '100px',
+                        'content': '申请成功!',
+                        'modal': true,
+                        'buttons': {
+                            '确定': function () {
+                                M.dialog2.close();
+                                window.location.href = "/ForeExhibition/ForeExhibitionDetail?ID=" + UrlSearch() + "";
+                            }
+                        }
+                    })
+
+
+                }
+                else {
+                    if (M.dialog2) {
+                        return M.dialog2.show();
+                    }
+                    M.dialog2 = jqueryAlert({
+                        'width': '200px',
+                        'height': '100px',
+                        'content': '' + data + '',
+                        'modal': true,
+                        'buttons': {
+                            '确定': function () {
+                                M.dialog2.close();
+                            }
+                        }
+                    })
+                }
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                /*弹出jqXHR对象的信息*/
+                console.log(jqXHR.responseText, jqXHR.status, jqXHR.readyState, jqXHR.statusText, textStatus, errorThrown);
+
+            }
+        });
+    }
+
+
+</script>
+
+
+
+<div class="container-fluid">
+    <div class="row xs" style="height: 50px;">
+        <div class="bs-example bs-navbar-top-example" data-example-id="navbar-static-top">
+            <nav class="navbar navbar-default navbar-static-top">
+                <!-- We use the fluid option here to avoid overriding the fixed width of a normal container within the narrow content columns. -->
+                <div class="container-fluid">
+                    <div class="navbar-header" style="height:50px;">
+                        <div style="font-size: 16px; line-height: 50px;">
+                            <a class="navbar-brand" onclick="Back()"><span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span></a>
+                            <p style="text-align: center;width: 86%;height: 100%;">展会申请</p>
+                        </div>
+                    </div>
+
+                </div>
+            </nav>
+        </div>
+    </div>
+</div>
+
+
+<div style="padding-left: 20px; padding-right: 20px;">
+    <div class="row" style="font-size: 16px; margin-top: 30px">
+        <div class="col-xs-5 col-sm-5">
+
+            <p style="float: right; line-height: 34px;">所需面积:</p>
+
+        </div>
+        <div class="col-xs-6 col-sm-6">
+            <input type="text" id="TradeArea" name="TradeArea" style="width: auto" class="form-control" placeholder="请输入面积">
+        </div>
+
+    </div>
+
+    <div class="row" style="font-size: 16px; margin-top: 30px">
+        <div class="col-xs-5 col-sm-5">
+
+            <p style="float: right; line-height: 44px;">上传文件:</p>
+
+        </div>
+        <div class="col-xs-6 col-sm-6">
+            <input id="file-0" name="file1" type="file" data-show-preview="false"  multiple class="file" data-overwrite-initial="false" data-min-file-count="1" >
+        </div>
+
+    </div>
+
+    <div class="row" style="font-size: 16px; margin-top: 30px">
+        <div class="col-xs-12 col-sm-12">
+             @* <input id="file-0" name="file1" type="file" data-show-preview="false"  multiple class="file" data-overwrite-initial="false" data-min-file-count="1" >*@
+        </div>
+
+    </div>
+
+    <div class="row">
+
+
+        <input type="text" id="idd" name="idd" hidden="hidden" />
+        <div class="col-xs-12 col-md-12" style="margin-top: 20px;">
+            <button type="button" onclick="upload()" class="btn_sure btn_PhoneOperation">确 认</button>
+        </div>
+
+    </div>
+
+</div>
+
+
+<style>
+    .btn_PhoneOperation {
+        border: 0px;
+        text-shadow: none;
+        background: 0px;
+        font-weight: 500;
+        padding-left: 0px;
+        -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+        outline: none;
+        height: 34px;
+        padding: 6px 12px;
+        font-size: 14px;
+        width: 100%;
+        color: #999;
+    }
+
+    .btn_sure {
+        text-shadow: none;
+        background-color: #e64a4a;
+        color: #fff;
+        display: block;
+        width: 98%;
+        height: 3rem;
+        font-size: 1.6rem;
+        margin: 0 auto;
+        text-align: center;
+        border-radius: 2rem;
+        margin-bottom: 1rem;
+    }
+</style>

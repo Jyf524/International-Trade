@@ -1,0 +1,77 @@
+﻿@{
+    ViewBag.Title = "AnnualReviewDetail";
+    Layout = "~/Views/Shared/ForeLayout.cshtml";
+}
+
+<script>
+
+    var xa;
+
+    $(function IndexAjax() {
+        $.get('@Url.Action("AnnualReviewDetail1", "Personal")', { id: UrlSearch() },//url: 获取服务器数据的地址 date:向服务器传递的参数 callback: 回调函数，在服务器响应后，页面更新前执行
+            function (result) {
+                $('#box1_k').empty();
+                var sArray = result.BusinessCard.split(','); 
+                if(result.ExamineState =="1")
+                {
+                    $('#box1_k').append(' <div class="row" style="font-size: 16px; margin-top: 5px"><div class="col-xs-5 col-sm-5"><p style="float: right; line-height: 34px;">付款凭证:</p></div><div class="col-xs-6 col-sm-6" style="line-height: 34px;"><img src="' + result.PayCard + '" class="img-responsive" /></div></div><div class="row" style="font-size: 16px; margin-top: 5px"><div class="col-xs-5 col-sm-5"><p style="float: right; line-height: 34px;">营业执照:</p></div><div class="col-xs-6 col-sm-6" style="line-height: 34px;"><img src="' + sArray[0] + '" class="img-responsive" /></br><img src="' + sArray[1] + '" class="img-responsive" /></div></div><div class="row" style="font-size: 16px; margin-top: 5px"><div class="col-xs-5 col-sm-5"><p style="float: right; line-height: 34px;">状态:</p></div><div class="col-xs-6 col-sm-6" style="line-height: 34px;">年审通过</div></div>')
+                }
+                if(result.ExamineState =="2")
+                {
+                    $('#box1_k').append(' <div class="row" style="font-size: 16px; margin-top: 5px"><div class="col-xs-5 col-sm-5"><p style="float: right; line-height: 34px;">付款凭证:</p></div><div class="col-xs-6 col-sm-6" style="line-height: 34px;"><img src="' + result.PayCard + '" class="img-responsive" /></div></div><div class="row" style="font-size: 16px; margin-top: 5px"><div class="col-xs-5 col-sm-5"><p style="float: right; line-height: 34px;">营业执照:</p></div><div class="col-xs-6 col-sm-6" style="line-height: 34px;"><img src="' + sArray[0] + '" class="img-responsive" /></br><img src="' + sArray[1] + '" class="img-responsive" /></div></div><div class="row" style="font-size: 16px; margin-top: 5px"><div class="col-xs-5 col-sm-5"><p style="float: right; line-height: 34px;">状态:</p></div><div class="col-xs-6 col-sm-6" style="line-height: 34px;">年审未通过</div></div>')
+                }
+                if(result.ExamineState =="3")
+                {
+                    $('#box1_k').append(' <div class="row" style="font-size: 16px; margin-top: 5px"><div class="col-xs-5 col-sm-5"><p style="float: right; line-height: 34px;">付款凭证:</p></div><div class="col-xs-6 col-sm-6" style="line-height: 34px;"><img src="' + result.PayCard + '" class="img-responsive" /></div></div><div class="row" style="font-size: 16px; margin-top: 5px"><div class="col-xs-5 col-sm-5"><p style="float: right; line-height: 34px;">营业执照:</p></div><div class="col-xs-6 col-sm-6" style="line-height: 34px;"><img src="' + sArray[0] + '" class="img-responsive" /></br><img src="' + sArray[1] + '" class="img-responsive" /></div></div><div class="row" style="font-size: 16px; margin-top: 5px"><div class="col-xs-5 col-sm-5"><p style="float: right; line-height: 34px;">状态:</p></div><div class="col-xs-6 col-sm-6" style="line-height: 34px;">文件已受理</div></div>')
+                }
+            })
+    })
+
+    function UrlSearch() {
+        var name, id;
+        var str = location.href; //获取到整个地址
+        var num = str.indexOf("?")
+        str = str.substr(num + 1); //取得num+1后所有参数，这里的num+1是下标 str.substr(start [, length ]
+        var arr = str.split("&"); //以&分割各个参数放到数组里
+        for (var i = 0; i < arr.length; i++) {
+            num = arr[i].indexOf("=");
+            if (num > 0) {
+                id = arr[i].substring(0, num);
+                id = arr[i].substr(num + 1);
+                this[name] = id;
+                return id;
+            }
+        }
+    }
+
+
+</script>
+
+<div class="container-fluid">
+    <div class="row xs" style="height: 50px;">
+        <div class="bs-example bs-navbar-top-example" data-example-id="navbar-static-top">
+            <nav class="navbar navbar-default navbar-static-top">
+                <!-- We use the fluid option here to avoid overriding the fixed width of a normal container within the narrow content columns. -->
+                <div class="container-fluid">
+                    <div class="navbar-header" style="height:50px;">
+                        <div style="font-size: 16px; line-height: 50px;">
+                            <a class="navbar-brand" href="../Personal/AnnualReview"><span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span></a>
+                            <p style="text-align: center;width: 86%;height: 100%;">年审材料详细</p>
+                        </div>
+                    </div>
+
+                </div>
+            </nav>
+        </div>
+    </div>
+</div>
+
+
+<div style="padding:2.5rem">
+
+    <div>
+        <div id="box1_k"></div>
+       
+
+    </div>
+</div>

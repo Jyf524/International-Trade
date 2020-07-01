@@ -1,0 +1,99 @@
+﻿@{
+    ViewBag.Title = "ExamineDetail";
+    Layout = "~/Areas/BackManager/Views/Shared/Back_Layout.cshtml";
+}
+
+<script src="~/Scripts/jquery-1.7.1.js"></script>
+
+<script>
+
+    $(function ()
+    {
+        $("#BtnPass").click(function () {
+            $.get('@Url.Action("Pass1", "Examine")', { id: UrlSearch() },//url: 获取服务器数据的地址 date:向服务器传递的参数 callback: 回调函数，在服务器响应后，页面更新前执行
+                             function (result) {
+                                 window.location.href = '../Examine/ExamineIndex';
+                             }
+                             )
+         })
+
+        $("#BtnNoPass").click(function () {
+            $.get('@Url.Action("NoPass1", "Examine")', { id: UrlSearch() },//url: 获取服务器数据的地址 date:向服务器传递的参数 callback: 回调函数，在服务器响应后，页面更新前执行
+                        function (result) {
+                            window.location.href = '../Examine/ExamineIndex';
+                        }
+                        )
+    })
+
+    })
+
+   
+
+    function UrlSearch() {
+        var name, id;
+        var str = location.href; //获取到整个地址
+        var num = str.indexOf("?")
+        str = str.substr(num + 1); //取得num+1后所有参数，这里的num+1是下标 str.substr(start [, length ]
+        var arr = str.split("&"); //以&分割各个参数放到数组里
+        for (var i = 0; i < arr.length; i++) {
+            num = arr[i].indexOf("=");
+            if (num > 0) {
+                id = arr[i].substring(0, num);
+                id = arr[i].substr(num + 1);
+                this[name] = id;
+                return id;
+            }
+        }
+    }
+
+    
+
+    $(function IndexAjax(id) {
+
+        $.get('@Url.Action("ExamineDetail1", "Examine")', { id: UrlSearch() },//url: 获取服务器数据的地址 date:向服务器传递的参数 callback: 回调函数，在服务器响应后，页面更新前执行
+             function (result) {
+                 var a = ChangeDateFormat(result.ExamineTime);
+                 var sArray = result.BusinessCard.split(',');
+                 $('#box1_k').append(
+
+                     '<tr><td style="border: none;">企业名称：</td><td style="border: none;">' + result.CompanyName + '</td></tr><tr><td style="border: none;">审核状态：</td><td style="border: none;">' + result.ExamineState + '</td></tr><tr><td style="border: none;">付款凭证：</td><td style="border: none;"><img src="' + result.PayCard + '" style="width: 500px; height: 300px; border-radius: 0;" /></td></tr><tr><td style="border: none;">营业执照：</td><td style="border: none;"><img style="width: 500px; height: 300px; border-radius: 0;" src="' + sArray[0] + '" class="img-responsive" /><img src="' + sArray[1] + '" class="img-responsive" style="width: 500px; height: 300px; border-radius: 0;" /></td></tr><tr><td style="border: none;">年审时间：</td><td style="border: none;">' + a + '</td></tr>'
+                 )
+             })
+    })
+
+    function ChangeDateFormat(jsondate) {
+        jsondate = jsondate.replace("/Date(", "").replace(")/", "");
+        if (jsondate.indexOf("+") > 0) {
+            jsondate = jsondate.substring(0, jsondate.indexOf("+"));
+        }
+        else if (jsondate.indexOf("-") > 0) {
+            jsondate = jsondate.substring(0, jsondate.indexOf("-"));
+        }
+        var date = new Date(parseInt(jsondate, 10));
+        var month = date.getMonth() + 1 < 10 ? "0" + (date.getMonth() + 1) : date.getMonth() + 1;
+        var currentDate = date.getDate() < 10 ? "0" + date.getDate() : date.getDate();
+        return date.getFullYear() + "-" + month + "-" + currentDate;
+    };
+
+</script>
+
+<div style="padding-top: 2.5rem; padding-right: 2.5rem; padding-left: 2.5rem;">
+    <div style="background: #fff">
+        <div class="table-responsive" style="padding: 2.5rem">
+            <table class="table">
+                <tbody id="box1_k">
+                </tbody>
+
+            </table>
+            <div class="row" style="margin-right: 100px; float: right">
+                <div class="col-md-12  col-xs-12">
+                    <button type="button" style="background: #796AEE; color: #fff" class="btn btn-default" id="BtnPass" >通过</button>
+                    <button type="button" style="background: #796AEE; color: #fff" class="btn btn-default" id="BtnNoPass" >不通过</button>
+                    <a href="../Examine/ExamineIndex" style="background: #796AEE; color: #fff" class="btn btn-default">返回</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
